@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Angular build
+dist/
+.angular/
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Uploads / generated files - po potrebi ćemo kasnije prilagoditi
+uploads/
