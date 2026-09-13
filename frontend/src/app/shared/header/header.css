@@ -1,0 +1,36 @@
+header {
+  background: white;
+  border-bottom: 1px solid #dfe5e1;
+}
+.header-content, .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.header-content {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-block: 1rem;
+}
+.brand {
+  text-decoration: none;
+  font-weight: 750;
+  color: #1f342d;
+}
+.brand-mark {
+  padding: 0.5rem;
+  background: #174e42;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+}
+nav a {
+  display: inline-block;
+  padding: 0.5rem 0.85rem;
+  text-decoration: none;
+  border-radius: 0.4rem;
+  color: #174e42;
+}
+nav a.active, nav a:hover {
+  background: #edf4ef;
+}

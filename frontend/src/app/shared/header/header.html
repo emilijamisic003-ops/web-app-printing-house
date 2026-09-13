@@ -1,0 +1,14 @@
+<header>
+  <div class="container header-content">
+    <a class="brand" routerLink="/" aria-label="Printing House — početna stranica">
+      <span class="brand-mark" aria-hidden="true">PH</span>
+      <span>Printing House</span>
+    </a>
+    <nav aria-label="Glavna navigacija">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page">Početna</a>
+      <a routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page">Prijava</a>
+    </nav>
+  </div>
+</header>

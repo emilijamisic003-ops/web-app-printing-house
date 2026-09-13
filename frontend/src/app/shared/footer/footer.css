@@ -1,0 +1,13 @@
+footer {
+  border-top: 1px solid #dfe5e1;
+  background: white;
+  color: #53645b;
+  font-size: 0.9rem;
+}
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  padding-block: 1.5rem;
+}

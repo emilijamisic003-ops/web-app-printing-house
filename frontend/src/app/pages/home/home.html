@@ -1,0 +1,62 @@
+<div class="container home">
+  <section class="intro" aria-labelledby="home-title">
+    <p class="eyebrow">Sve za štampu na jednom mestu</p>
+    <h1 id="home-title">Printing House</h1>
+    <p class="intro-text">Pronađite štampariju i proizvode za svoje ideje — od vizitkarti i postera
+      do majica i personalizovanih poklona.</p>
+    <a class="search-link" href="#product-search">Pretražite proizvode <span aria-hidden="true">↓</span></a>
+  </section>
+
+  <div class="overview">
+    <section class="panel statistic" aria-labelledby="printing-houses-title">
+      <h2 id="printing-houses-title">Registrovane štamparije</h2>
+      <span class="stat-value" aria-hidden="true">—</span>
+      <p>Ukupan broj registrovanih štamparija trenutno nije dostupan.</p>
+    </section>
+    <section class="panel" aria-labelledby="top-products-title">
+      <h2 id="top-products-title">Top 5 najomiljenijih proizvoda</h2>
+      <p>Proizvodi sa najviše sviđanja na jednom mestu.</p>
+      <div class="placeholder">Ovde će biti prikazano pet najomiljenijih proizvoda.</div>
+    </section>
+  </div>
+
+  <section class="panel search-section" id="product-search" aria-labelledby="search-title">
+    <h2 id="search-title">Pretraga proizvoda</h2>
+    <p>Unesite naziv proizvoda ili izaberite kategoriju.</p>
+    <form (submit)="search($event)" class="search-form" aria-labelledby="search-title">
+      <div class="field">
+        <label for="product-name">Naziv proizvoda</label>
+        <input id="product-name" name="productName" type="search" placeholder="Npr. majica, šolja, vizitkarta">
+      </div>
+      <div class="field">
+        <label for="category">Kategorija</label>
+        <select id="category" name="category">
+          <option value="">Sve kategorije</option>
+        </select>
+      </div>
+      <button type="submit">Pretraži</button>
+    </form>
+    <p class="search-status" role="status">{{ searchSubmitted
+      ? 'Pretraga još nije dostupna. Proizvodi i kategorije biće prikazani kada podaci budu dostupni.'
+      : 'Proizvodi i kategorije još nisu dostupni za pretragu.' }}</p>
+    <div class="table-wrapper" role="region" aria-label="Tabela rezultata pretrage" tabindex="0">
+      <table>
+        <caption>Rezultati pretrage</caption>
+        <thead>
+          <tr>
+            <th scope="col">Naziv proizvoda</th>
+            <th scope="col">Kategorija</th>
+            <th scope="col">Štamparija</th>
+            <th scope="col">Grad</th>
+            <th scope="col">Detalji</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5" class="empty-results">Ovde će biti prikazani proizvodi koji odgovaraju vašoj pretrazi.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

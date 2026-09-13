@@ -1,1 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f7f9f6;
+  color: #20372c;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+.container {
+  width: min(1120px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+:focus-visible {
+  outline: 3px solid #a05b16;
+  outline-offset: 3px;
+}

@@ -1,0 +1,46 @@
+<div class="container login-page">
+  <section class="login-card" aria-labelledby="login-title">
+    <p class="eyebrow">Printing House</p>
+    <h1 id="login-title">{{ admin ? 'Prijava administratora' : 'Prijava' }}</h1>
+    <p class="introduction">{{ admin
+      ? 'Posebna prijava za administratora sistema.'
+      : 'Prijava za klijente i štamparije. Unesite svoje korisničko ime i lozinku.' }}</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" aria-labelledby="login-title">
+      <p class="required-note">Sva polja su obavezna.</p>
+      <div class="field">
+        <label for="username">Korisničko ime</label>
+        <input id="username" type="text" formControlName="username" autocomplete="username" required
+          [attr.aria-invalid]="form.controls.username.touched && form.controls.username.invalid"
+          [attr.aria-describedby]="form.controls.username.touched && form.controls.username.invalid ? 'username-error' : null">
+        @if (form.controls.username.touched && form.controls.username.hasError('required')) {
+          <p class="error" id="username-error" role="alert">Unesite korisničko ime.</p>
+        }
+      </div>
+      <div class="field">
+        <label for="password">Lozinka</label>
+        <input id="password" type="password" formControlName="password" autocomplete="current-password" required
+          [attr.aria-invalid]="form.controls.password.touched && form.controls.password.invalid"
+          [attr.aria-describedby]="form.controls.password.touched && form.controls.password.invalid ? 'password-error' : null">
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <p class="error" id="password-error" role="alert">Unesite lozinku.</p>
+        }
+      </div>
+      <button class="submit-button" type="submit">Prijavi se</button>
+      <p class="status" role="status">{{ submitted
+        ? 'Prijava još nije omogućena. Niste prijavljeni u sistem.'
+        : '' }}</p>
+    </form>
+
+    @if (!admin) {
+      <div class="public-actions">
+        <a href="#login-help" (click)="showHelp($event, 'password')" aria-controls="login-help">Zaboravljena lozinka?</a>
+        <span>Nemate nalog?
+          <button class="text-button" type="button" (click)="showHelp($event, 'registration')"
+            aria-controls="login-help">Registracija</button>
+        </span>
+      </div>
+      <p class="help-message" id="login-help" role="status">{{ helpMessage }}</p>
+    }
+  </section>
+</div>

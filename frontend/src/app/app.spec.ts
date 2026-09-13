@@ -1,23 +1,53 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
+import { routes } from './app.routes';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [provideRouter(routes)]
     }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should render title', () => {
+  it('should render the public home page at / with the shared header and footer', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend');
+    await TestBed.inject(Router).navigateByUrl('/');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelector('header')).not.toBeNull();
+    expect(page.querySelector('main h1')?.textContent).toContain('Printing House');
+    expect(page.querySelector('footer')).not.toBeNull();
+  });
+
+  it('opens public login from the header and keeps admin login separate', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    page.querySelector<HTMLAnchorElement>('header a[href="/login"]')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(router.url).toBe('/login');
+    expect(page.querySelector('main h1')?.textContent).toBe('Prijava');
+    expect(page.querySelector('.public-actions')?.textContent).toContain('Zaboravljena lozinka?');
+    expect(page.querySelector('.public-actions')?.textContent).toContain('Registracija');
+
+    await router.navigateByUrl('/admin/login');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(page.querySelector('main h1')?.textContent).toBe('Prijava administratora');
+    expect(page.querySelector('.public-actions')).toBeNull();
+    expect(page.querySelector('input[type="password"]')).not.toBeNull();
+    expect(page.querySelector('header')).not.toBeNull();
+    expect(page.querySelector('footer')).not.toBeNull();
   });
 });
