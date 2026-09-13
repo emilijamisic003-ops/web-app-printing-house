@@ -1,7 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { LoginForm } from './login-form';
+import { provideRouter } from '@angular/router';
 
 describe('LoginForm', () => {
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
+
   it('shows required-field errors after submitting an empty form', () => {
     const fixture = TestBed.createComponent(LoginForm);
     fixture.detectChanges();

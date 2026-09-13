@@ -1,0 +1,155 @@
+.register-page {
+  padding-block: 3.5rem;
+}
+
+.register-card {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 2rem;
+  border: 1px solid #dfe5e1;
+  border-radius: 0.85rem;
+  background: white;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #296350;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  line-height: 1.2;
+}
+
+.introduction, .hint, .file-name, .status, .login-link {
+  color: #53645b;
+}
+
+.hint, .file-name, .status {
+  font-size: 0.85rem;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 1.5rem 0;
+  padding: 1rem 0 0;
+  border: 0;
+  border-top: 1px solid #dfe5e1;
+}
+
+legend {
+  padding-right: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.field p {
+  margin: 0;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input, select, button {
+  font: inherit;
+}
+
+input, select {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.85rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #adbdb3;
+  border-radius: 0.4rem;
+  background: white;
+  color: #24372e;
+}
+
+input[type='file'] {
+  font-size: 0.9rem;
+}
+
+.file-name {
+  overflow-wrap: anywhere;
+}
+
+input[aria-invalid='true'] {
+  border-color: #a52c24;
+}
+
+.error {
+  color: #a52c24;
+  font-size: 0.85rem;
+}
+
+.error:empty, .status:empty {
+  display: none;
+}
+
+.image-field {
+  margin-bottom: 1.5rem;
+}
+
+.submit-button {
+  min-height: 2.85rem;
+  padding: 0.65rem 1.5rem;
+  border: 1px solid #174e42;
+  border-radius: 0.4rem;
+  background: #174e42;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background: #103c32;
+}
+
+.login-link {
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid #dfe5e1;
+}
+
+a {
+  color: #174e42;
+  text-underline-offset: 0.2rem;
+}
+
+@media (max-width: 600px) {
+  .register-page {
+    padding-block: 2rem;
+  }
+
+  .register-card {
+    padding: 1.25rem;
+  }
+
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}

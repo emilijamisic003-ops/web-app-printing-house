@@ -1,0 +1,106 @@
+<div class="container register-page">
+  <section class="register-card" aria-labelledby="register-title">
+    <p class="eyebrow">Printing House</p>
+    <h1 id="register-title">Registracija</h1>
+    <p class="introduction">Izaberite tip naloga i unesite svoje podatke.</p>
+    <p class="hint">Sva polja su obavezna, osim profilne slike.</p>
+    <form [formGroup]="form" (ngSubmit)="submit()" aria-labelledby="register-title">
+      <div class="field account-type">
+        <label for="account-type">Tip naloga</label>
+        <select id="account-type" formControlName="accountType" required>
+          <option value="individual">Klijent - fizičko lice</option>
+          <option value="legal">Klijent - pravno lice</option>
+          <option value="printing">Štamparija</option>
+        </select>
+      </div>
+      <fieldset>
+        <legend>Podaci o korisniku</legend>
+        <div class="fields-grid">
+        <div class="field">
+          <label for="username">Korisničko ime</label>
+          <input id="username" type="text" formControlName="username" autocomplete="username" required
+            [attr.aria-invalid]="!!error('username')" [attr.aria-describedby]="error('username') ? 'username-error' : null">
+          <p class="error" id="username-error" aria-live="polite">{{ error('username') }}</p>
+        </div>
+        <div class="field">
+          <label for="password">Lozinka</label>
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" required
+            [attr.aria-invalid]="!!error('password')" aria-describedby="password-hint password-error">
+          <p class="hint" id="password-hint">8–12 karaktera. Počinje slovom; sadrži veliko slovo, broj i specijalni karakter.</p>
+          <p class="error" id="password-error" aria-live="polite">{{ error('password') }}</p>
+        </div>
+        <div class="field">
+          <label for="firstName">Ime</label>
+          <input id="firstName" type="text" formControlName="firstName" autocomplete="given-name" required
+            [attr.aria-invalid]="!!error('firstName')" [attr.aria-describedby]="error('firstName') ? 'firstName-error' : null">
+          <p class="error" id="firstName-error" aria-live="polite">{{ error('firstName') }}</p>
+        </div>
+        <div class="field">
+          <label for="lastName">Prezime</label>
+          <input id="lastName" type="text" formControlName="lastName" autocomplete="family-name" required
+            [attr.aria-invalid]="!!error('lastName')" [attr.aria-describedby]="error('lastName') ? 'lastName-error' : null">
+          <p class="error" id="lastName-error" aria-live="polite">{{ error('lastName') }}</p>
+        </div>
+        <div class="field">
+          <label for="phone">Kontakt telefon</label>
+          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" required
+            [attr.aria-invalid]="!!error('phone')" [attr.aria-describedby]="error('phone') ? 'phone-error' : null">
+          <p class="error" id="phone-error" aria-live="polite">{{ error('phone') }}</p>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" autocomplete="email" required
+            [attr.aria-invalid]="!!error('email')" [attr.aria-describedby]="error('email') ? 'email-error' : null">
+          <p class="error" id="email-error" aria-live="polite">{{ error('email') }}</p>
+        </div>
+        </div>
+      </fieldset>
+      @if (isInstitution) {
+        <fieldset formGroupName="institution">
+          <legend>Podaci o instituciji</legend>
+          <p class="hint">Ime i prezime iznad odnose se na odgovorno lice institucije.</p>
+          <div class="fields-grid">
+        <div class="field">
+          <label for="institution-name">Naziv institucije</label>
+          <input id="institution-name" type="text" formControlName="name" autocomplete="organization" required
+            [attr.aria-invalid]="!!error('institution.name')" [attr.aria-describedby]="error('institution.name') ? 'institution-name-error' : null">
+          <p class="error" id="institution-name-error" aria-live="polite">{{ error('institution.name') }}</p>
+        </div>
+        <div class="field">
+          <label for="institution-address">Adresa sedišta</label>
+          <input id="institution-address" type="text" formControlName="address" autocomplete="street-address" required
+            [attr.aria-invalid]="!!error('institution.address')" [attr.aria-describedby]="error('institution.address') ? 'institution-address-error' : null">
+          <p class="error" id="institution-address-error" aria-live="polite">{{ error('institution.address') }}</p>
+        </div>
+        <div class="field">
+          <label for="institution-registrationNumber">Matični broj</label>
+          <input id="institution-registrationNumber" type="text" formControlName="registrationNumber" autocomplete="off" required inputmode="numeric"
+            [attr.aria-invalid]="!!error('institution.registrationNumber')" [attr.aria-describedby]="error('institution.registrationNumber') ? 'institution-registrationNumber-error' : null">
+          <p class="error" id="institution-registrationNumber-error" aria-live="polite">{{ error('institution.registrationNumber') }}</p>
+        </div>
+        <div class="field">
+          <label for="institution-pib">PIB</label>
+          <input id="institution-pib" type="text" formControlName="pib" autocomplete="off" required inputmode="numeric"
+            [attr.aria-invalid]="!!error('institution.pib')" [attr.aria-describedby]="error('institution.pib') ? 'institution-pib-error' : null">
+          <p class="error" id="institution-pib-error" aria-live="polite">{{ error('institution.pib') }}</p>
+        </div>
+          </div>
+        </fieldset>
+      }
+      <div class="field image-field">
+        <label for="profile-image">Profilna slika (opciono)</label>
+        <input id="profile-image" type="file" accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
+          (change)="selectImage($event)" [attr.aria-invalid]="!!error('profileImage')"
+          aria-describedby="image-hint image-error image-name">
+        <p class="hint" id="image-hint">Dozvoljeni formati: JPG, PNG i GIF.</p>
+        <p class="file-name" id="image-name" aria-live="polite">{{ form.controls.profileImage.value
+          ? 'Izabrani fajl: ' + form.controls.profileImage.value.name
+          : 'Nijedna slika nije izabrana.' }}</p>
+        <p class="error" id="image-error" aria-live="polite">{{ error('profileImage') }}</p>
+      </div>
+      <button class="submit-button" type="submit">Registruj se</button>
+      <p class="status" role="status">{{ statusMessage }}</p>
+    </form>
+    <p class="login-link">Već imate nalog? <a routerLink="/login">Prijavite se</a></p>
+  </section>
+</div>

@@ -41,6 +41,12 @@ describe('App', () => {
     expect(page.querySelector('.public-actions')?.textContent).toContain('Zaboravljena lozinka?');
     expect(page.querySelector('.public-actions')?.textContent).toContain('Registracija');
 
+    page.querySelector<HTMLAnchorElement>('a[href="/register"]')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(router.url).toBe('/register');
+    expect(page.querySelector('main h1')?.textContent).toBe('Registracija');
+
     await router.navigateByUrl('/admin/login');
     await fixture.whenStable();
     fixture.detectChanges();

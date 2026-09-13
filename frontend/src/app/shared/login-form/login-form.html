@@ -34,10 +34,9 @@
 
     @if (!admin) {
       <div class="public-actions">
-        <a href="#login-help" (click)="showHelp($event, 'password')" aria-controls="login-help">Zaboravljena lozinka?</a>
+        <a href="#login-help" (click)="showHelp($event)" aria-controls="login-help">Zaboravljena lozinka?</a>
         <span>Nemate nalog?
-          <button class="text-button" type="button" (click)="showHelp($event, 'registration')"
-            aria-controls="login-help">Registracija</button>
+          <a routerLink="/register">Registracija</a>
         </span>
       </div>
       <p class="help-message" id="login-help" role="status">{{ helpMessage }}</p>

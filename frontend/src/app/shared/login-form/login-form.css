@@ -111,17 +111,10 @@ input[aria-invalid='true'] {
   font-size: 0.9rem;
 }
 
-a, .text-button {
+a {
   color: #174e42;
   text-decoration: underline;
   text-underline-offset: 0.2rem;
-}
-
-.text-button {
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
 }
 
 @media (max-width: 540px) {

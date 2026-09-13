@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login-form.html',
   styleUrl: './login-form.css'
 })
@@ -23,10 +24,8 @@ export class LoginForm {
     this.submitted = this.form.valid;
   }
 
-  showHelp(event: Event, type: 'password' | 'registration'): void {
+  showHelp(event: Event): void {
     event.preventDefault();
-    this.helpMessage = type === 'password'
-      ? 'Obnova lozinke još nije dostupna.'
-      : 'Registracija još nije dostupna.';
+    this.helpMessage = 'Obnova lozinke još nije dostupna.';
   }
 }
