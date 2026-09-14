@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { passwordValidators } from '../../shared/validators/password';
 
 type AccountType = 'individual' | 'legal' | 'printing';
 
@@ -23,10 +24,7 @@ export class Register {
   readonly form = new FormGroup({
     accountType: new FormControl<AccountType>('individual', { nonNullable: true, validators: [Validators.required] }),
     username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    password: new FormControl('', { nonNullable: true, validators: [
-      Validators.required, Validators.minLength(8), Validators.maxLength(12),
-      Validators.pattern(/^(?=.*\p{Lu})(?=.*[0-9])(?=.*[\p{P}\p{S}])\p{L}.*$/u)
-    ] }),
+    password: new FormControl('', { nonNullable: true, validators: passwordValidators }),
     firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     phone: new FormControl('', { nonNullable: true, validators: [Validators.required] }),

@@ -17,15 +17,10 @@ export class LoginForm {
   });
 
   submitted = false;
-  helpMessage = '';
 
   submit(): void {
     this.form.markAllAsTouched();
     this.submitted = this.form.valid;
   }
 
-  showHelp(event: Event): void {
-    event.preventDefault();
-    this.helpMessage = 'Obnova lozinke još nije dostupna.';
-  }
 }

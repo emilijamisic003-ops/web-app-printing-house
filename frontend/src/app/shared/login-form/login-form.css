@@ -26,7 +26,7 @@ h1 {
   line-height: 1.2;
 }
 
-.introduction, .required-note, .public-actions, .status, .help-message {
+.introduction, .required-note, .public-actions, .status {
   color: #53645b;
 }
 
@@ -91,12 +91,12 @@ input[aria-invalid='true'] {
   background: #103c32;
 }
 
-.status, .help-message {
+.status {
   margin: 0.75rem 0 0;
   font-size: 0.9rem;
 }
 
-.status:empty, .help-message:empty {
+.status:empty {
   margin: 0;
 }
 

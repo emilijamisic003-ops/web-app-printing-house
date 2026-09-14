@@ -11,6 +11,34 @@ describe('App', () => {
     }).compileComponents();
   });
 
+  it('navigates to password recovery and opens reset directly, with links back to login', async () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const router = TestBed.inject(Router);
+    const page = fixture.nativeElement as HTMLElement;
+    await router.navigateByUrl('/login');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    page.querySelector<HTMLAnchorElement>('a[href="/forgot-password"]')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(router.url).toBe('/forgot-password');
+    expect(page.querySelector('main h1')?.textContent).toBe('Zaboravljena lozinka?');
+    page.querySelector<HTMLAnchorElement>('main a[href="/login"]')!.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/login');
+
+    await router.navigateByUrl('/reset-password');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(page.querySelector('main h1')?.textContent).toBe('Postavite novu lozinku');
+    expect(page.querySelector('header')).not.toBeNull();
+    expect(page.querySelector('footer')).not.toBeNull();
+    page.querySelector<HTMLAnchorElement>('main a[href="/login"]')!.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/login');
+  });
+
   it('should render the public home page at / with the shared header and footer', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
