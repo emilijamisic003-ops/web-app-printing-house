@@ -1,0 +1,56 @@
+<main class="container printer-orders-page">
+  <section class="printer-orders-panel" aria-labelledby="orders-title">
+    <h1 id="orders-title">Porudžbine</h1>
+    @if (successMessage) { <p class="success" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <p class="error" role="alert">{{ errorMessage }}</p> }
+    @if (loading) {
+      <p>Učitavanje porudžbina...</p>
+    } @else {
+      <div class="table-wrapper" role="region" aria-label="Tabela porudžbina" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>ID fakture</th>
+              <th>Klijent</th>
+              <th>Datum</th>
+              <th>Proizvodi</th>
+              <th>Ukupan iznos</th>
+              <th>Status</th>
+              <th>Akcija</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders; track order.invoiceId) {
+              <tr>
+                <td>{{ order.invoiceId }}</td>
+                <td>{{ order.clientUsername }}</td>
+                <td>{{ order.createdAt | date:'dd.MM.yyyy. HH:mm' }}</td>
+                <td>
+                  <ol>
+                    @for (item of order.items; track item.productCode) {
+                      <li>{{ item.productName }} ({{ item.quantity }})</li>
+                    }
+                  </ol>
+                </td>
+                <td>{{ order.totalPrice }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                  @if (nextStatus(order); as status) {
+                    <button type="button" [disabled]="updatingInvoiceId === order.invoiceId"
+                      (click)="changeStatus(order)">
+                      {{ status === 'u štampi' ? 'POČNI ŠTAMPU' : 'ISPORUČENO' }}
+                    </button>
+                  } @else {
+                    <span>-</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7">Nema porudžbina.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

@@ -1,0 +1,56 @@
+<main class="container admin-requests-page">
+  <section class="admin-requests-panel" aria-labelledby="requests-title">
+    <h1 id="requests-title">Zahtevi za registraciju</h1>
+    @if (successMessage) { <p class="success" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <p class="error" role="alert">{{ errorMessage }}</p> }
+    @if (loading) {
+      <p>Učitavanje zahteva...</p>
+    } @else if (users.length === 0) {
+      <p>Nema zahteva za registraciju.</p>
+    } @else {
+      <div class="table-wrapper" role="region" aria-label="Tabela zahteva za registraciju" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Korisničko ime</th>
+              <th>Ime</th>
+              <th>Prezime</th>
+              <th>Email</th>
+              <th>Telefon</th>
+              <th>Uloga</th>
+              <th>Tip klijenta</th>
+              <th>Naziv institucije</th>
+              <th>Adresa</th>
+              <th>Matični broj</th>
+              <th>PIB</th>
+              <th>Akcije</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users; track user.username) {
+              <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.clientType || '' }}</td>
+                <td>{{ user.institutionName || '' }}</td>
+                <td>{{ user.address || '' }}</td>
+                <td>{{ user.registrationNumber || '' }}</td>
+                <td>{{ user.pib || '' }}</td>
+                <td>
+                  <button type="button" [disabled]="processingUsername === user.username" (click)="approve(user)">
+                    {{ processingUsername === user.username ? 'ČUVANJE...' : 'ODOBRI' }}
+                  </button>
+                  <button type="button" [disabled]="processingUsername === user.username" (click)="reject(user)">ODBIJ</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

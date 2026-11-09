@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { matchingPasswords, passwordValidators } from '../../shared/validators/password';
 
 @Component({
@@ -11,15 +11,22 @@ import { matchingPasswords, passwordValidators } from '../../shared/validators/p
   styleUrl: './reset-password.css'
 })
 export class ResetPassword {
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  submitting = false;
+  completed = false;
+  errorMessage = '';
+
+  get token(): string {
+    return this.route.snapshot.queryParamMap.get('token')?.trim() || '';
+  }
+
+  
   readonly form = new FormGroup({
     newPassword: new FormControl('', { nonNullable: true, validators: passwordValidators }),
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] })
   }, { validators: matchingPasswords });
   statusMessage = '';
-
-  constructor() {
-    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.statusMessage = '');
-  }
 
   error(field: 'newPassword' | 'confirmPassword'): string {
     const control = this.form.controls[field];
@@ -37,8 +44,27 @@ export class ResetPassword {
   }
 
   submit(): void {
+    if (this.submitting || this.completed) return;
+    this.statusMessage = '';
+    this.errorMessage = '';
     this.form.markAllAsTouched();
-    this.statusMessage = this.form.valid
-      ? 'Promena lozinke još nije omogućena. Lozinka nije promenjena.' : '';
+    if (!this.token) {
+      this.errorMessage = 'Link nije ispravan.';
+      return;
+    }
+    if (this.form.invalid) return;
+    this.submitting = true;
+    this.authService.resetPassword(this.token, this.form.controls.newPassword.value).subscribe({
+      next: response => {
+        this.statusMessage = response.message;
+        this.completed = true;
+        this.submitting = false;
+        this.form.reset();
+      },
+      error: error => {
+        this.errorMessage = error.error?.message || 'Greška pri promeni lozinke.';
+        this.submitting = false;
+      }
+    });
   }
 }

@@ -8,6 +8,8 @@ dist/
 # Environment variables
 .env
 .env.*
+!.env.example
+backend/generated/
 
 # Logs
 *.log
@@ -20,5 +22,14 @@ Thumbs.db
 # VS Code
 .vscode/
 
-# Uploads / generated files - po potrebi ćemo kasnije prilagoditi
+# Runtime uploads (demo images in frontend/public/products stay tracked)
 uploads/
+frontend/public/images/products/
+frontend/public/images/profiles/*
+!frontend/public/images/profiles/default_profile_image.jpg
+
+# Test reports and local temporary files
+coverage/
+*.tsbuildinfo
+*.pem
+*.key

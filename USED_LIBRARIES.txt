@@ -1,0 +1,427 @@
+USED LIBRARIES — PRINTING HOUSE
+Datum pregleda: 23.09.2026.
+Napomena ažurirana 09.11.2026: dodat je lokalni backend TypeScript 5.9.3.
+
+Obuhvat: root, frontend i backend package.json, izvorni kod, testovi,
+npm skripte, angular.json i TypeScript konfiguracije. Za posrednu upotrebu
+proverene su i relevantne deklaracije/konfiguracije instaliranih alata.
+Verzije su prepisane iz package.json: ^ i ~ predstavljaju dozvoljeni opseg,
+a ne nužno tačnu trenutno instaliranu verziju.
+Popis sadrži sve direktno deklarisane pakete i spoljne importe projekta;
+ne nabraja sve tranzitivne zavisnosti iz node_modules/package-lock.json.
+Razvojni paketi koriste se za build, tipove ili testove i nisu zato nekorišćeni.
+Linkovi vode na zvanične npm stranice paketa. Instalacija: npm install <paket>
+(za razvojne pakete: npm install --save-dev <paket>) u odgovarajućem folderu.
+
+==================================================
+FRONTEND
+==================================================
+
+1. Angular Common
+Paket: @angular/common
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Zajedničke Angular direktive, DatePipe/DecimalPipe i HttpClient za HTTP zahteve.
+Upotreba/status: Importi @angular/common i @angular/common/http u komponentama, servisima i app.config.ts.
+Preuzimanje: https://www.npmjs.com/package/@angular/common
+
+2. Angular Compiler
+Paket: @angular/compiler
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Prevođenje Angular HTML šablona.
+Upotreba/status: Koristi ga Angular build/test alat; nije potreban direktan import u komponentama.
+Preuzimanje: https://www.npmjs.com/package/@angular/compiler
+
+3. Angular Core
+Paket: @angular/core
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Osnova Angular aplikacije: komponente, dependency injection i životni ciklus.
+Upotreba/status: Komponente, servisi i app.config.ts; podmoduli testing i rxjs-interop takođe pripadaju ovom paketu.
+Preuzimanje: https://www.npmjs.com/package/@angular/core
+
+4. Angular Forms
+Paket: @angular/forms
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Reactive Forms, template-driven forme i validacija unosa.
+Upotreba/status: ReactiveFormsModule, FormGroup, Validators i FormsModule u stranicama.
+Preuzimanje: https://www.npmjs.com/package/@angular/forms
+
+5. Angular Platform Browser
+Paket: @angular/platform-browser
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Pokretanje Angular aplikacije u pregledaču.
+Upotreba/status: bootstrapApplication u frontend/src/main.ts.
+Preuzimanje: https://www.npmjs.com/package/@angular/platform-browser
+
+6. Angular Router
+Paket: @angular/router
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Rute, navigacija, parametri URL-a i zaštita stranica.
+Upotreba/status: app.routes.ts, RouterLink, Router i ActivatedRoute.
+Preuzimanje: https://www.npmjs.com/package/@angular/router
+
+7. RxJS
+Paket: rxjs
+Verzija: ~7.8.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Observable objekti i pretplate na asinhrone rezultate, uključujući HTTP.
+Upotreba/status: Direktni importi u cart.service.ts, home.ts i product-details.ts; koristi ga i HttpClient.
+Preuzimanje: https://www.npmjs.com/package/rxjs
+
+8. TypeScript runtime helpers
+Paket: tslib
+Verzija: ^2.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Pomoćne funkcije koje TypeScript može da izdvoji u generisanom JavaScript kodu.
+Upotreba/status: frontend/tsconfig.json uključuje importHelpers; koristi se kroz TypeScript/Angular toolchain.
+Preuzimanje: https://www.npmjs.com/package/tslib
+
+9. Zone.js
+Paket: zone.js
+Verzija: ~0.15.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (dependencies)
+Namena: Praćenje asinhronih događaja za Angular osvežavanje prikaza i testove.
+Upotreba/status: Polyfills zone.js i zone.js/testing u angular.json; provideZoneChangeDetection u app.config.ts.
+Preuzimanje: https://www.npmjs.com/package/zone.js
+
+10. Angular Build
+Paket: @angular/build
+Verzija: ^20.3.6
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Build aplikacije, razvojni server i pokretanje testova.
+Upotreba/status: angular.json koristi application, dev-server, extract-i18n i karma buildere ovog paketa.
+Preuzimanje: https://www.npmjs.com/package/@angular/build
+
+11. Angular CLI
+Paket: @angular/cli
+Verzija: ^20.3.6
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Komanda ng za razvoj, build i testiranje.
+Upotreba/status: frontend/package.json: ng serve, ng build, ng test.
+Preuzimanje: https://www.npmjs.com/package/@angular/cli
+
+12. Angular Compiler CLI
+Paket: @angular/compiler-cli
+Verzija: ^20.3.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Angular kompilacija i provera šablona zajedno sa TypeScript kodom.
+Upotreba/status: Koristi ga @angular/build; nije direktno importovan u aplikaciji.
+Preuzimanje: https://www.npmjs.com/package/@angular/compiler-cli
+
+13. Jasmine TypeScript tipovi
+Paket: @types/jasmine
+Verzija: ~5.1.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Tipovi za describe, it, expect i ostale Jasmine test funkcije.
+Upotreba/status: frontend/tsconfig.spec.json navodi types: jasmine; koriste ih *.spec.ts fajlovi.
+Preuzimanje: https://www.npmjs.com/package/@types/jasmine
+
+14. Baseline Browser Mapping
+Paket: baseline-browser-mapping
+Verzija: ^2.11.22
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Podaci o verzijama pregledača i Baseline kompatibilnosti.
+Upotreba/status: Posredno ga koristi browserslist u Angular build lancu; potvrđen require u instaliranom browserslist/index.js. Nema direktne aplikacione upotrebe.
+Preuzimanje: https://www.npmjs.com/package/baseline-browser-mapping
+
+15. Jasmine
+Paket: jasmine-core
+Verzija: ~5.9.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Test framework za definisanje testova i očekivanih rezultata.
+Upotreba/status: frontend/src/**/*.spec.ts; pokreće se preko Karma/Jasmine konfiguracije.
+Preuzimanje: https://www.npmjs.com/package/jasmine-core
+
+16. Karma
+Paket: karma
+Verzija: ~6.4.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Pokretanje frontend testova u pregledaču.
+Upotreba/status: ng test i @angular/build:karma u angular.json.
+Preuzimanje: https://www.npmjs.com/package/karma
+
+17. Karma Chrome Launcher
+Paket: karma-chrome-launcher
+Verzija: ~3.2.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Pokretanje Chrome/Chromium pregledača za testiranje.
+Upotreba/status: Podrazumevani Karma config u @angular/build učitava ovaj plugin; podržava ChromeHeadless.
+Preuzimanje: https://www.npmjs.com/package/karma-chrome-launcher
+
+18. Karma Coverage
+Paket: karma-coverage
+Verzija: ~2.2.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Izveštaji o pokrivenosti koda testovima.
+Upotreba/status: Podrazumevani Angular Karma config učitava plugin; izveštaj se pravi kada se zatraži code coverage.
+Preuzimanje: https://www.npmjs.com/package/karma-coverage
+
+19. Karma Jasmine
+Paket: karma-jasmine
+Verzija: ~5.1.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: Povezuje Karma runner i Jasmine framework.
+Upotreba/status: Podrazumevana konfiguracija @angular/build:karma koristi frameworks: jasmine.
+Preuzimanje: https://www.npmjs.com/package/karma-jasmine
+
+20. Karma Jasmine HTML Reporter
+Paket: karma-jasmine-html-reporter
+Verzija: ~2.1.0
+Deo projekta: frontend
+Deklaracija: frontend/package.json (devDependencies)
+Namena: HTML prikaz rezultata Jasmine testova u pregledaču.
+Upotreba/status: Plugin je uključen u podrazumevanu Angular Karma konfiguraciju.
+Preuzimanje: https://www.npmjs.com/package/karma-jasmine-html-reporter
+
+21. TypeScript
+Paket: typescript
+Verzija: frontend ~5.9.2; backend 5.9.3
+Deo projekta: oba
+Deklaracija: frontend/package.json i backend/package.json (devDependencies)
+Namena: Provera tipova i prevođenje TypeScript koda u JavaScript.
+Upotreba/status: Frontend ga koristi preko Angular builda. Backend build skripta poziva lokalni tsc sa target podešavanjem ES2022.
+Preuzimanje: https://www.npmjs.com/package/typescript
+
+==================================================
+BACKEND
+==================================================
+
+1. bcrypt
+Paket: bcrypt
+Verzija: ^6.0.0
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Heširanje lozinki i provera unete lozinke prema sačuvanom hešu.
+Upotreba/status: backend/src/controllers/user.controller.ts; koristi se i u backend testovima.
+Preuzimanje: https://www.npmjs.com/package/bcrypt
+
+2. CORS
+Paket: cors
+Verzija: ^2.8.5
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Podešavanje dozvoljenih zahteva iz drugog origin-a, npr. Angular ka Express serveru.
+Upotreba/status: backend/src/server.ts.
+Preuzimanje: https://www.npmjs.com/package/cors
+
+3. dotenv
+Paket: dotenv
+Verzija: ^17.4.2
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Učitavanje konfiguracije iz .env u process.env.
+Upotreba/status: backend/src/utils/brevo-mail.ts.
+Preuzimanje: https://www.npmjs.com/package/dotenv
+
+4. Express
+Paket: express
+Verzija: ^5.2.1
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: HTTP server, rute, obrada zahteva i JSON odgovori.
+Upotreba/status: backend/src/server.ts, routes i controllers.
+Preuzimanje: https://www.npmjs.com/package/express
+
+5. MongoDB Node.js Driver
+Paket: mongodb
+Verzija: ^7.0.0
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Niskonivojski drajver za komunikaciju sa MongoDB bazom.
+Upotreba/status: Nema direktnih importa u projektnom kodu. Mongoose koristi MongoDB drajver kao svoju zavisnost. Direktna deklaracija ovog paketa: prisutan, ali verovatno nekorišćen direktno.
+Preuzimanje: https://www.npmjs.com/package/mongodb
+
+6. Mongoose
+Paket: mongoose
+Verzija: ^9.1.5
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Šeme, modeli i upiti ka MongoDB bazi.
+Upotreba/status: backend/src/models, kontroleri i server.ts.
+Preuzimanje: https://www.npmjs.com/package/mongoose
+
+7. Multer
+Paket: multer
+Verzija: ^2.4.0
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Prijem multipart/form-data zahteva i fajlova.
+Upotreba/status: backend/src/routes/user.routes.ts i product.routes.ts: upload slika i fajlova.
+Preuzimanje: https://www.npmjs.com/package/multer
+
+8. PDFKit
+Paket: pdfkit
+Verzija: ^0.20.2
+Deo projekta: backend
+Deklaracija: backend/package.json (dependencies)
+Namena: Kreiranje PDF dokumenata.
+Upotreba/status: backend/src/utils/invoice.ts i procurement-report.ts: fakture i izveštaji javnih nabavki.
+Preuzimanje: https://www.npmjs.com/package/pdfkit
+
+9. bcrypt TypeScript tipovi
+Paket: @types/bcrypt
+Verzija: ^6.0.0
+Deo projekta: backend
+Deklaracija: backend/package.json (devDependencies)
+Namena: TypeScript definicije za bcrypt.
+Upotreba/status: Tipovi za bcrypt pozive u user.controller.ts.
+Preuzimanje: https://www.npmjs.com/package/@types/bcrypt
+
+10. CORS TypeScript tipovi
+Paket: @types/cors
+Verzija: ^2.8.19
+Deo projekta: backend
+Deklaracija: backend/package.json (devDependencies)
+Namena: TypeScript definicije za cors middleware.
+Upotreba/status: Tipovi za cors u backend/src/server.ts.
+Preuzimanje: https://www.npmjs.com/package/@types/cors
+
+11. Express TypeScript tipovi
+Paket: @types/express
+Verzija: ^5.0.6
+Deo projekta: backend
+Deklaracija: backend/package.json (devDependencies)
+Namena: Tipovi za Request, Response, Router i Express aplikaciju.
+Upotreba/status: Backend kontroleri i rute.
+Preuzimanje: https://www.npmjs.com/package/@types/express
+
+12. Multer TypeScript tipovi
+Paket: @types/multer
+Verzija: ^2.2.0
+Deo projekta: backend
+Deklaracija: backend/package.json (devDependencies)
+Namena: Tipovi za upload middleware i req.file/req.files.
+Upotreba/status: Backend rute i kontroleri koji primaju fajlove.
+Preuzimanje: https://www.npmjs.com/package/@types/multer
+
+13. Node.js TypeScript tipovi
+Paket: @types/node
+Verzija: ^25.0.9
+Deo projekta: backend
+Deklaracija: backend/package.json (devDependencies)
+Namena: Tipovi za ugrađene Node.js module, Buffer, process i slične API-je.
+Upotreba/status: Backend TypeScript kod. Ovo je npm paket sa tipovima, za razliku od ugrađenih modula koje opisuje.
+Preuzimanje: https://www.npmjs.com/package/@types/node
+
+14. PDFKit TypeScript tipovi
+Paket: @types/pdfkit
+Verzija: ^0.17.6
+Deo projekta: backend
+Deklaracija: backend/package.json (devDependencies)
+Namena: TypeScript definicije za PDFDocument i PDFKit API.
+Upotreba/status: Backend invoice.ts i procurement-report.ts.
+Preuzimanje: https://www.npmjs.com/package/@types/pdfkit
+
+==================================================
+PAKET DEKLARISAN U ROOT PROJEKTA
+==================================================
+
+1. Image Size
+Paket: image-size
+Verzija: ^2.0.4
+Deo projekta: backend
+Deklaracija: package.json (dependencies)
+Namena: Čitanje dimenzija slike radi validacije fajla.
+Upotreba/status: backend/src/utils/image-validation.ts; deklarisan u korenskom package.json, ne u backend/package.json.
+Preuzimanje: https://www.npmjs.com/package/image-size
+
+==================================================
+UGRAĐENI NODE.JS MODULI
+==================================================
+
+Sledeći moduli dolaze uz Node.js i ne instaliraju se posebno.
+Prefiks node: označava isti ugrađeni modul.
+
+crypto
+Deo projekta: backend
+Namena: Generisanje tokena za reset lozinke i UUID identifikatora za porudžbine, nabavke i nazive upload fajlova.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+fs i fs/promises
+Deo projekta: backend
+Namena: Čitanje, pisanje, kreiranje foldera i brisanje slika/PDF fajlova; sinhroni i asinhroni fajl API.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+path
+Deo projekta: backend
+Namena: Formiranje i razrešavanje putanja za upload, statičke fajlove, PDF i .env.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+node:test
+Deo projekta: backend
+Namena: Pokretanje backend unit/regresionih testova.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+node:assert/strict
+Deo projekta: backend
+Namena: Provere očekivanih rezultata u backend testovima.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+node:os
+Deo projekta: backend
+Namena: Privremeni sistemski folder za izolovane integracione testove.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+node:zlib
+Deo projekta: backend
+Namena: Kompresija podataka pri pravljenju testne PNG slike u integracionim testovima.
+Napomena: Dolazi uz Node.js i ne instalira se posebno.
+
+==================================================
+NAPOMENE I MOGUĆI PROBLEMI
+==================================================
+
+1. image-size je stvarno importovan u backend kodu, ali se nalazi samo u
+   root package.json. To nije potpuno nedeklarisan paket, ali izolovana
+   instalacija samo backend foldera neće instalirati ovu zavisnost.
+   U postojećem rasporedu može se pronaći u root node_modules.
+
+2. Backend sada ima lokalni typescript 5.9.3 u devDependencies i koristi
+   target ES2022. Nije potrebna globalna instalacija TypeScript kompajlera.
+
+3. mongodb je prisutan, ali verovatno nekorišćen kao direktna zavisnost
+   aplikacije: kod pristupa bazi preko mongoose. Sam MongoDB drajver se
+   ipak koristi posredno kroz Mongoose. Ovo nije tvrdnja da drajver nije potreban.
+
+4. baseline-browser-mapping nema direktne importe u aplikaciji, ali se
+   koristi posredno kroz browserslist u Angular build lancu.
+
+5. Prettier podešavanja postoje u frontend/package.json, ali prettier nije
+   deklarisan kao paket i nema npm skripte koja ga pokreće. Zbog toga nije
+   naveden kao potvrđena biblioteka projekta.
+
+6. Brevo je spoljašnji email servis, a ne instaliran npm paket u ovom
+   projektu. backend/src/utils/brevo-mail.ts koristi ugrađeni fetch za
+   HTTPS zahtev. Ne koriste se Brevo SDK, axios ili nodemailer.
+   fetch, FormData, File, localStorage i JSON nisu zasebni npm paketi.
+
+7. Angular podmoduli kao @angular/common/http, @angular/core/testing i
+   @angular/core/rxjs-interop deo su već navedenih Angular paketa,
+   a ne dodatne biblioteke koje treba posebno instalirati.
+
+Pregled je statički: status upotrebe zasnovan je na kodu i konfiguraciji.
+Nijedan paket nije instaliran/uklonjen i kod aplikacije nije menjan.

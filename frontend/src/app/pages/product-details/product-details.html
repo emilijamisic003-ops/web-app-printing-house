@@ -1,0 +1,114 @@
+<div class="container product-details">
+  <a routerLink="/">← Nazad na početnu</a>
+  @if (loading) {
+    <p role="status">Učitavanje proizvoda...</p>
+  } @else if (errorMessage) {
+    <p class="error-message" role="alert">{{ errorMessage }}</p>
+  } @else if (product) {
+    <section class="panel">
+      <h1>{{ product.name }}</h1>
+      <dl>
+        <dt>Šifra proizvoda</dt><dd>{{ product.code }}</dd>
+        <dt>Štamparija</dt><dd>{{ printer?.institutionName?.trim() || product.printingHouseUsername }}</dd>
+        @if (printer) {
+          <dt>Korisničko ime štamparije</dt><dd>{{ printer.username }}</dd>
+          <dt>Adresa štamparije</dt><dd>{{ printer.address || 'Nije navedena' }}</dd>
+        }
+        <dt>Kategorija</dt><dd>{{ product.category }}</dd>
+        <dt>Potkategorija</dt><dd>{{ product.subcategory }}</dd>
+        <dt>Broj lajkova</dt><dd>{{ product.likes }}</dd>
+        <dt>Broj dislajkova</dt><dd>{{ product.dislikes }}</dd>
+      </dl>
+      <section class="comments" aria-labelledby="comments-title">
+        <h2 id="comments-title">Komentari</h2>
+        @for (comment of comments; track comment._id) {
+          <article class="comment" [class.my-comment]="comment.username === currentUsername">
+            <div class="comment-meta"><strong>{{ comment.username }}</strong> · {{ comment.createdAt | date:'dd.MM.yyyy. HH:mm' }}</div>
+            <p>{{ comment.text }}</p>
+          </article>
+        } @empty {
+          <p>Nema komentara.</p>
+        }
+      </section>
+      <h2>Slika proizvoda</h2>
+      @if (product.mainImage && product.mainImage.trim() && !imageFailed) {
+        <img class="product-image" [src]="mainImageUrl" [alt]="product.name"
+          (error)="imageFailed = true">
+      } @else {
+        <div class="image-placeholder">Slika nije dostupna</div>
+      }
+      @if (isClient) {
+        <section class="client-options" aria-labelledby="configuration-title">
+          <h2 id="configuration-title">Izbor proizvoda</h2>
+          <p>Cena po komadu: {{ product.unitPrice | number:'1.2-2' }} RSD</p>
+          <p>Na stanju: {{ product.stock }}</p>
+          <form [formGroup]="configurationForm" (ngSubmit)="next()">
+            <div class="field">
+              <label for="quantity">Količina</label>
+              <input id="quantity" type="number" formControlName="quantity" min="1" [max]="product.stock" step="1">
+              @if (configurationForm.controls.quantity.touched && configurationForm.controls.quantity.invalid) {
+                <p class="error-message" role="alert">Unesite ceo broj od 1 do {{ product.stock }}.</p>
+              }
+              @if (product.stock < 1) {
+                <p class="error-message">Proizvod trenutno nije na stanju.</p>
+              }
+            </div>
+            <div class="field">
+              @if (product.colors && product.colors.length) {
+                <label for="color">Dostupne boje</label>
+                <select id="color" formControlName="color">
+                  @for (color of product.colors; track $index) {
+                    <option [value]="color">{{ color }}</option>
+                  }
+                </select>
+              } @else {
+                <p>Nema dostupnih boja</p>
+              }
+            </div>
+            <div class="field">
+              @if (product.printServices && product.printServices.length) {
+                <label for="print-service">Dostupne usluge štampe</label>
+                <select id="print-service" formControlName="printService">
+                  @for (service of product.printServices; track $index) {
+                    <option [ngValue]="service">{{ service.printType || service.serviceId }}
+                      @if (service.additionalPricePerItem != null) {
+                        (+{{ service.additionalPricePerItem }} RSD po komadu, {{ service.maxWidthMm }} mm x {{ service.maxHeightMm }} mm maksimalne dimenzije)
+                      }
+                    </option>
+                  }
+                </select>
+              } @else {
+                <p>Nema dostupnih usluga štampe</p>
+              }
+            </div>
+            <div class="field">
+              <label for="print-text">Tekst za štampu</label>
+              <textarea id="print-text" formControlName="printText" rows="4"></textarea>
+            </div>
+            <p class="total" aria-live="polite">Ukupna cena: {{ totalPrice | number:'1.2-2' }} RSD</p>
+            <button type="submit">Dodaj u korpu</button>
+            @if (cartMessage) {
+              <p role="status">{{ cartMessage }}</p>
+            }
+            @if (cartError) {
+              <p class="error-message" role="alert">{{ cartError }}</p>
+            }
+          </form>
+          @if (selectedConfiguration) {
+            <section aria-labelledby="prepared-title">
+              <h2 id="prepared-title">Pripremljena konfiguracija</h2>
+              <dl>
+                <dt>Šifra proizvoda</dt><dd>{{ selectedConfiguration.productCode }}</dd>
+                <dt>Količina</dt><dd>{{ selectedConfiguration.quantity }}</dd>
+                <dt>Boja</dt><dd>{{ selectedConfiguration.selectedColor || 'Nije izabrana' }}</dd>
+                <dt>Usluga štampe</dt><dd>{{ selectedConfiguration.selectedPrintService?.printType || selectedConfiguration.selectedPrintService?.serviceId || 'Nije izabrana' }}</dd>
+                <dt>Tekst za štampu</dt><dd class="print-text">{{ selectedConfiguration.printText || 'Nije unet' }}</dd>
+                <dt>Ukupna cena</dt><dd>{{ selectedConfiguration.totalPrice | number:'1.2-2' }} RSD</dd>
+              </dl>
+            </section>
+          }
+        </section>
+      }
+    </section>
+  }
+</div>

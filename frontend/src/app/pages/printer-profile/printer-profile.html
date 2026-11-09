@@ -1,0 +1,74 @@
+<main class="container printer-profile-page">
+  <section class="profile-card" aria-labelledby="profile-title">
+    <h1 id="profile-title">Profil štamparije</h1>
+    @if (loading) { <p role="status">Učitavanje profila...</p> }
+    @if (errorMessage) { <p class="error" role="alert">{{ errorMessage }}</p> }
+    @if (user) {
+      <dl class="profile-details">
+        <div><dt>Korisničko ime</dt><dd>{{ user.username }}</dd></div>
+        <div><dt>Ime</dt><dd>{{ user.firstName }}</dd></div>
+        <div><dt>Prezime</dt><dd>{{ user.lastName }}</dd></div>
+        <div><dt>Telefon</dt><dd>{{ user.phone }}</dd></div>
+        <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+        <div><dt>Naziv institucije</dt><dd>{{ user.institutionName || 'Nije navedeno.' }}</dd></div>
+        <div><dt>Adresa</dt><dd>{{ user.address || 'Nije navedena.' }}</dd></div>
+        <div><dt>Matični broj</dt><dd>{{ user.registrationNumber || 'Nije naveden.' }}</dd></div>
+        <div><dt>PIB</dt><dd>{{ user.pib || 'Nije naveden.' }}</dd></div>
+        <div><dt>Profilna slika</dt><dd>
+          <img [src]="profileImageSrc" [alt]="'Profilna slika štamparije ' + user.username" (error)="onImageError()">
+        </dd></div>
+      </dl>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <h2>Izmena profila</h2>
+        <p class="hint">Korisničko ime i uloga ne mogu se menjati. Prazan matični broj ili PIB zadržava postojeću vrednost.</p>
+        <div class="fields-grid">
+          @for (field of [
+            { id: 'firstName', label: 'Ime' },
+            { id: 'lastName', label: 'Prezime' },
+            { id: 'phone', label: 'Telefon' },
+            { id: 'email', label: 'Email' },
+            { id: 'institutionName', label: 'Naziv institucije' },
+            { id: 'address', label: 'Adresa' }
+          ]; track field.id) {
+            <div class="field">
+              <label [for]="'edit-' + field.id">{{ field.label }}</label>
+              <input [id]="'edit-' + field.id" [type]="field.id === 'email' ? 'email' : 'text'"
+                [formControlName]="$any(field.id)" required>
+              <p class="error">{{ error($any(field.id)) }}</p>
+            </div>
+          }
+          <div class="field">
+            <label for="edit-registrationNumber">Matični broj</label>
+            <input id="edit-registrationNumber" type="text" inputmode="numeric" formControlName="registrationNumber">
+            <p class="error">{{ error('registrationNumber') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-pib">PIB</label>
+            <input id="edit-pib" type="text" inputmode="numeric" formControlName="pib">
+            <p class="error">{{ error('pib') }}</p>
+          </div>
+        </div>
+        <button type="submit" [disabled]="saving || imageUploading">{{ saving ? 'Čuvanje...' : 'SAČUVAJ IZMENE' }}</button>
+        @if (successMessage) { <p role="status">{{ successMessage }}</p> }
+        @if (saveError) { <p class="error" role="alert">{{ saveError }}</p> }
+      </form>
+
+      <div class="profile-image-upload">
+        <h2>Profilna slika</h2>
+        <label for="profile-image">Nova profilna slika</label>
+        <input #profileImageInput id="profile-image" type="file" accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
+          (change)="onProfileImageSelected($event)" [disabled]="saving || imageUploading">
+        <p class="hint">Dozvoljeni formati: JPG, PNG i GIF. Dimenzije: 100x100 do 250x250 px.</p>
+        @if (selectedProfileImage) {
+          <p class="hint">Izabrano: {{ selectedProfileImage.name }}</p>
+          <button type="button" (click)="uploadProfileImage(profileImageInput)" [disabled]="saving || imageUploading">
+            {{ imageUploading ? 'Čuvanje slike...' : 'SAČUVAJ SLIKU' }}
+          </button>
+        }
+        @if (imageUploadMessage) { <p role="status">{{ imageUploadMessage }}</p> }
+        @if (imageUploadError) { <p class="error" role="alert">{{ imageUploadError }}</p> }
+      </div>
+    }
+  </section>
+</main>

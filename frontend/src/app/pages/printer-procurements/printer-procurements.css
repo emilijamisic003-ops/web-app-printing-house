@@ -1,0 +1,18 @@
+.procurement-page { padding-block: 2.5rem; }
+.panel { padding: 1.75rem; border: 1px solid #dfe5e1; border-radius: .85rem; background: white; }
+h1 { margin-top: 0; }
+form { margin-block: 1.5rem; max-width: 600px; }
+fieldset { border: 1px solid #dfe5e1; border-radius: .5rem; padding: 1rem; }
+label { display: block; margin-bottom: .5rem; font-weight: 600; }
+input, select { box-sizing: border-box; width: 100%; padding: .7rem; border: 1px solid #acbcb3; border-radius: .4rem; font: inherit; background: white; }
+button { padding: .7rem 1rem; border: 1px solid #174e42; border-radius: .4rem; background: #174e42; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+button:disabled { opacity: .6; cursor: default; }
+.secondary { color: #174e42; background: white; }
+.actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+.error { color: #a12b2b; }
+.table-wrapper { overflow-x: auto; margin-top: 1.5rem; }
+table { width: 100%; min-width: 700px; border-collapse: collapse; text-align: left; }
+th, td { padding: .8rem; border-bottom: 1px solid #dfe5e1; }
+@media (max-width: 600px) { .panel { padding: 1rem; } }
+
+.procurement-entry { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #dfe5e1; }

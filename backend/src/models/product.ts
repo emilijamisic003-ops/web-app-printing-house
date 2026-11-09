@@ -20,11 +20,16 @@ let Product = new Schema({
   printServices: [{
     _id: false,
     serviceId: String,
+    name: String,
+    maxDimensions: String,
     printType: String,
     additionalPricePerItem: Number,
     maxWidthMm: Number,
     maxHeightMm: Number
   }]
 });
+
+Product.index({ printingHouseUsername: 1, code: 1 }, { unique: true,
+  partialFilterExpression: { printingHouseUsername: { $type: 'string' }, code: { $type: 'string' } } });
 
 export default mongoose.model('ProductModel', Product, 'products');

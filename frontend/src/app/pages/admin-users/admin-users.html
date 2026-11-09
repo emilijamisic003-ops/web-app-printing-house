@@ -1,0 +1,62 @@
+<main class="container admin-users-page">
+  <section class="admin-users-panel" aria-labelledby="users-title">
+    <h1 id="users-title">Korisnici</h1>
+    @if (successMessage) { <p class="success" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <p class="error" role="alert">{{ errorMessage }}</p> }
+    @if (loading) {
+      <p>Učitavanje korisnika...</p>
+    } @else {
+      <div class="table-wrapper" role="region" aria-label="Tabela korisnika" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Korisničko ime</th>
+              <th>Ime</th>
+              <th>Prezime</th>
+              <th>Email</th>
+              <th>Telefon</th>
+              <th>Uloga</th>
+              <th>Akcije</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users; track user.username) {
+              <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ editingUsername === user.username ? '' : user.firstName }}</td>
+                <td>{{ editingUsername === user.username ? '' : user.lastName }}</td>
+                <td>{{ editingUsername === user.username ? '' : user.email }}</td>
+                <td>{{ editingUsername === user.username ? '' : user.phone }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                  @if (user.role !== 'admin') {
+                    <button type="button" (click)="startEditing(user)">IZMENI</button>
+                    <button type="button" (click)="deleteUser(user)">OBRIŠI</button>
+                  } @else {
+                    <span>Admin</span>
+                  }
+                </td>
+              </tr>
+              @if (editingUsername === user.username) {
+                <tr class="edit-row">
+                  <td colspan="9">
+                    <form (ngSubmit)="saveUser(user)">
+                      <label>Ime <input name="firstName" [(ngModel)]="editForm.firstName" required></label>
+                      <label>Prezime <input name="lastName" [(ngModel)]="editForm.lastName" required></label>
+                      <label>Telefon <input name="phone" [(ngModel)]="editForm.phone" required></label>
+                      <label>Email <input name="email" type="email" [(ngModel)]="editForm.email" required></label>
+                      <button type="submit" [disabled]="saving">{{ saving ? 'ČUVANJE...' : 'SAČUVAJ' }}</button>
+                      <button type="button" (click)="cancelEditing()">OTKAŽI</button>
+                    </form>
+                  </td>
+                </tr>
+              }
+            } @empty {
+              <tr><td colspan="9">Nema korisnika.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

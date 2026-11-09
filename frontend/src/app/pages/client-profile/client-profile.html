@@ -1,0 +1,171 @@
+<div class="container profile-page">
+  <section class="profile-card" aria-labelledby="profile-title">
+    <h1 id="profile-title">Moj profil</h1>
+    @if (loading) {
+      <p role="status">Učitavanje profila…</p>
+    }
+    @if (errorMessage) {
+      <p class="error" role="alert">{{ errorMessage }}</p>
+      <a routerLink="/login">Nazad na prijavu</a>
+    }
+    @if (user) {
+      <dl>
+        <div><dt>Korisničko ime</dt><dd>{{ user.username }}</dd></div>
+        <div><dt>Ime</dt><dd>{{ user.firstName }}</dd></div>
+        <div><dt>Prezime</dt><dd>{{ user.lastName }}</dd></div>
+        <div><dt>Kontakt telefon</dt><dd>{{ user.phone }}</dd></div>
+        <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+        <div>
+          <dt>Profilna slika</dt>
+          <dd>
+            @if (!defaultImageFailed) {
+              <img [src]="profileImageSrc" [alt]="'Profilna slika korisnika ' + user.username" (error)="onImageError()">
+            } @else {
+              <p class="hint">Slika trenutno nije dostupna.</p>
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>Tip klijenta</dt>
+          <dd>{{ clientTypeLabel }}</dd>
+        </div>
+      </dl>
+      @if (user.clientType === 'legal') {
+        <h2>Podaci o instituciji</h2>
+        <dl>
+          <div><dt>Naziv institucije</dt><dd>{{ user.institutionName || 'Nije navedeno.' }}</dd></div>
+          <div><dt>Adresa sedišta</dt><dd>{{ user.address || 'Nije navedeno.' }}</dd></div>
+          <div><dt>Matični broj</dt><dd>{{ user.registrationNumber || 'Nije navedeno.' }}</dd></div>
+          <div><dt>PIB</dt><dd>{{ user.pib || 'Nije navedeno.' }}</dd></div>
+        </dl>
+      }
+      <form [formGroup]="form" (ngSubmit)="save()" aria-labelledby="edit-title">
+        <h2 id="edit-title">Izmena profila</h2>
+        <p class="hint">Korisničko ime se ne može menjati.</p>
+        <div class="fields-grid">
+          <div class="field">
+            <label for="edit-firstName">Ime</label>
+            <input id="edit-firstName" type="text" formControlName="firstName" required
+              [attr.aria-invalid]="!!error('firstName')" aria-describedby="error-firstName">
+            <p class="error" id="error-firstName" aria-live="polite">{{ error('firstName') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-lastName">Prezime</label>
+            <input id="edit-lastName" type="text" formControlName="lastName" required
+              [attr.aria-invalid]="!!error('lastName')" aria-describedby="error-lastName">
+            <p class="error" id="error-lastName" aria-live="polite">{{ error('lastName') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-phone">Kontakt telefon</label>
+            <input id="edit-phone" type="tel" formControlName="phone" required
+              [attr.aria-invalid]="!!error('phone')" aria-describedby="error-phone">
+            <p class="error" id="error-phone" aria-live="polite">{{ error('phone') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-email">Email</label>
+            <input id="edit-email" type="email" formControlName="email" required
+              [attr.aria-invalid]="!!error('email')" aria-describedby="error-email">
+            <p class="error" id="error-email" aria-live="polite">{{ error('email') }}</p>
+          </div>
+        </div>
+        <div class="field profile-image-upload">
+          <label for="edit-profileImage">Nova profilna slika</label>
+          <input #profileImageInput id="edit-profileImage" type="file" [disabled]="imageUploading || saving" accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
+            (change)="onProfileImageSelected($event)">
+          <p class="hint">Dozvoljeni formati: JPG, PNG i GIF. Najveća veličina: 5 MB, dimenzija do 100x100 do 250x250 px.</p>
+          @if (selectedProfileImage) {
+            <p class="hint">Izabrano: {{ selectedProfileImage.name }}</p>
+            <button type="button" (click)="uploadProfileImage(profileImageInput)" [disabled]="imageUploading || saving">
+              {{ imageUploading ? 'Čuvanje slike…' : 'Sačuvaj profilnu sliku' }}
+            </button>
+          }
+          @if (imageUploadMessage) { <p role="status">{{ imageUploadMessage }}</p> }
+          @if (imageUploadError) { <p class="error" role="alert">{{ imageUploadError }}</p> }
+        </div>
+        @if (user.clientType === 'legal') {
+          <h3>Podaci o instituciji</h3>
+          <div class="fields-grid">
+          <div class="field">
+            <label for="edit-institutionName">Naziv institucije</label>
+            <input id="edit-institutionName" type="text" formControlName="institutionName" required
+              [attr.aria-invalid]="!!error('institutionName')" aria-describedby="error-institutionName">
+            <p class="error" id="error-institutionName" aria-live="polite">{{ error('institutionName') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-address">Adresa sedišta</label>
+            <input id="edit-address" type="text" formControlName="address" required
+              [attr.aria-invalid]="!!error('address')" aria-describedby="error-address">
+            <p class="error" id="error-address" aria-live="polite">{{ error('address') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-registrationNumber">Matični broj</label>
+            <input id="edit-registrationNumber" type="text" formControlName="registrationNumber" required
+              [attr.aria-invalid]="!!error('registrationNumber')" aria-describedby="error-registrationNumber">
+            <p class="error" id="error-registrationNumber" aria-live="polite">{{ error('registrationNumber') }}</p>
+          </div>
+          <div class="field">
+            <label for="edit-pib">PIB</label>
+            <input id="edit-pib" type="text" formControlName="pib" required
+              [attr.aria-invalid]="!!error('pib')" aria-describedby="error-pib">
+            <p class="error" id="error-pib" aria-live="polite">{{ error('pib') }}</p>
+          </div>
+          </div>
+        }
+        <button type="submit" [disabled]="saving">{{ saving ? 'Čuvanje…' : 'Sačuvaj izmene' }}</button>
+        <p role="status">{{ successMessage }}</p>
+        @if (saveError) {
+          <p class="error" role="alert">{{ saveError }}</p>
+        }
+      </form>
+    }
+    <!--<a class="back-link" routerLink="/client">Nazad na početnu stranicu</a>> -->
+  </section>
+  @if (user) {
+    <section class="orders-card" aria-labelledby="orders-title">
+      <h2 id="orders-title">Moje porudžbine</h2>
+      @if (ordersLoading) { <p role="status">Učitavanje porudžbina…</p> }
+      @if (ordersError) { <p class="error" role="alert">{{ ordersError }}</p> }
+      @if (cancelError) { <p class="error" role="alert">{{ cancelError }}</p> }
+      <div class="table-wrapper" tabindex="0" role="region" aria-label="Moje porudžbine">
+        <table>
+          <thead><tr>
+            <th [attr.aria-sort]="sortAccessibilityLabel('invoiceId')"><button type="button" class="sort-button" (click)="toggleSort('invoiceId')">ID fakture{{ sortMark('invoiceId') }}</button></th>
+            <th [attr.aria-sort]="sortAccessibilityLabel('printingHouse')"><button type="button" class="sort-button" (click)="toggleSort('printingHouse')">Štamparija{{ sortMark('printingHouse') }}</button></th>
+            <th>Grad</th>
+            <th>Proizvodi</th>
+            <th [attr.aria-sort]="sortAccessibilityLabel('totalPrice')"><button type="button" class="sort-button" (click)="toggleSort('totalPrice')">Ukupan iznos{{ sortMark('totalPrice') }}</button></th>
+            <th [attr.aria-sort]="sortAccessibilityLabel('status')">Status <!--<button type="button" class="sort-button" (click)="toggleSort('status')">Status {{ sortMark('status') }} </button>-->
+                <select id="status-filter" [(ngModel)]="statusFilter" (change)="filterOrders()" aria-label="Filtriraj po statusu">
+                  <option value="">Svi statusi</option>
+                  @for (category of states; track category) {
+                    <option [value]="category">{{ category }}</option>
+                  }
+                </select>
+            </th>
+            <th [attr.aria-sort]="sortAccessibilityLabel('createdAt')"><button type="button" class="sort-button" (click)="toggleSort('createdAt')">Datum{{ sortMark('createdAt') }}</button></th>
+          </tr></thead>
+          <tbody>
+            @for (order of filteredOrders; track order._id) {
+              <tr>
+                <td>{{ order.invoiceId || 'Nije naveden' }}</td>
+                <td>{{ printerName(order.printingHouseUsername) }}</td>
+                <td>{{ printers.get(order.printingHouseUsername)?.address || 'Nije navedeno' }}</td>
+                <td><ol>@for (item of order.items; track $index) { <li>{{ item.productName }} ({{ item.quantity }})</li> }</ol></td>
+                <td>{{ order.totalPrice | number:'1.2-2' }} RSD</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.createdAt | date:'dd.MM.yyyy. HH:mm' }}</td>
+                <td>
+                  @if (order.status === 'naručeno' || order.status === 'u štampi') {
+                    <button type="button" (click)="cancelOrder(order)" [disabled]="!order.invoiceId || cancelling.has(order.invoiceId)">OTKAŽI</button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              @if (!ordersLoading && !ordersError) { <tr><td colspan="8">Nemate porudžbine.</td></tr> }
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</div>

@@ -7,8 +7,35 @@
     <nav aria-label="Glavna navigacija">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
         ariaCurrentWhenActive="page">Početna</a>
-      <a routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-        ariaCurrentWhenActive="page">Prijava</a>
+      @let user = authService.getCurrentUser();
+      @if (user) {
+        @if (user.role === 'client') {
+          <a routerLink="/client" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Profil</a>
+          <a routerLink="/client/products" routerLinkActive="active" ariaCurrentWhenActive="page">Pretraga proizvoda</a>
+          <a routerLink="/client-car" routerLinkActive="active" ariaCurrentWhenActive="page">Korpa</a>
+          <a routerLink="/client-archive" routerLinkActive="active" ariaCurrentWhenActive="page">Arhiva proizvoda</a>
+          @if (user.clientType === 'legal') {
+            <a routerLink="/client/procurements" routerLinkActive="active" ariaCurrentWhenActive="page">Javne nabavke</a>
+          }
+        }
+
+        @if (user.role === 'printer') {
+          <a routerLink="/printer-profile" routerLinkActive="active" ariaCurrentWhenActive="page">Profil</a>
+          <a routerLink="/printer-products" routerLinkActive="active" ariaCurrentWhenActive="page">Moji proizvodi</a>
+          <a routerLink="/printer/procurements" routerLinkActive="active" ariaCurrentWhenActive="page">Javne nabavke</a>
+          <a routerLink="/printer-orders" routerLinkActive="active" ariaCurrentWhenActive="page">Porudžbine</a>
+        }
+        @if (user.role === 'admin') {
+          <a [routerLink]="authService.getHomeRouteForCurrentUser()" routerLinkActive="active" ariaCurrentWhenActive="page">Profil</a>
+        }
+        
+        <button type="button" (click)="logout()" aria-label="Odjava">Odjava</button>
+        
+      } @else {
+        <a routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page">Prijava</a>
+        <a routerLink="/register" routerLinkActive="active" ariaCurrentWhenActive="page">Registracija</a>
+      }
     </nav>
   </div>
 </header>

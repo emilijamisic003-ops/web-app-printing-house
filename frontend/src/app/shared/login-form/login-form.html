@@ -26,10 +26,13 @@
           <p class="error" id="password-error" role="alert">Unesite lozinku.</p>
         }
       </div>
-      <button class="submit-button" type="submit">Prijavi se</button>
-      <p class="status" role="status">{{ submitted
-        ? 'Prijava još nije omogućena. Niste prijavljeni u sistem.'
-        : '' }}</p>
+      <button class="submit-button" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Prijavljivanje…' : (admin ? 'PRIJAVA' : 'Prijavi se') }}
+      </button>
+      <p class="status" role="status">{{ successMessage }}</p>
+      @if (errorMessage) {
+        <p class="error" role="alert">{{ errorMessage }}</p>
+      }
     </form>
 
     @if (!admin) {

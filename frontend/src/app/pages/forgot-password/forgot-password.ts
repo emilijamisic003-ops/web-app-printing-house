@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -10,18 +10,35 @@ import { RouterLink } from '@angular/router';
   styleUrl: './forgot-password.css'
 })
 export class ForgotPassword {
+  
+  private authService = inject(AuthService);
+  submitting = false;
+  errorMessage = '';
+  
   readonly form = new FormGroup({
     identifier: new FormControl('', { nonNullable: true, validators: [Validators.required] })
   });
   statusMessage = '';
 
-  constructor() {
-    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.statusMessage = '');
-  }
 
   submit(): void {
+    if (this.submitting) return;
+    this.statusMessage = '';
+    this.errorMessage = '';
+    const identifier = this.form.controls.identifier.value.trim();
+    this.form.controls.identifier.setValue(identifier);
     this.form.markAllAsTouched();
-    this.statusMessage = this.form.valid
-      ? 'Slanje linka još nije omogućeno. Email nije poslat.' : '';
+    if (this.form.invalid) return;
+    this.submitting = true;
+    this.authService.forgotPassword(identifier).subscribe({
+      next: response => {
+        this.statusMessage = response.message;
+        this.submitting = false;
+      },
+      error: error => {
+        this.errorMessage = error.error?.message || 'Greška pri slanju email poruke.';
+        this.submitting = false;
+      }
+    });
   }
 }

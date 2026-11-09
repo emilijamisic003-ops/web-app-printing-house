@@ -1,0 +1,20 @@
+.cart { padding-block: 2.5rem; }
+.panel { padding: 1.75rem; border: 1px solid #dfe5e1; border-radius: 0.85rem; background: white; }
+h1 { margin-top: 0; }
+h2 { font-size: 1.2rem; overflow-wrap: anywhere; }
+h3 { font-size: 1.05rem; overflow-wrap: anywhere; }
+.printing-house-group { margin-block: 1.5rem; padding: 1rem; border: 1px solid #dfe5e1; border-radius: 0.5rem; }
+.subtotal { font-weight: 600; margin-bottom: 0; }
+.cart-item { padding-block: 1rem; border-bottom: 1px solid #dfe5e1; }
+dl { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.5rem; }
+dt, .total { font-weight: 600; }
+dd { margin: 0; overflow-wrap: anywhere; }
+button { font: inherit; padding: 0.65rem 1rem; border: 0; border-radius: 0.4rem; background: #174e42; color: white; cursor: pointer; }
+.error-message { color: #a12b2b; }
+.print-text { white-space: pre-wrap; }
+button:disabled { opacity: 0.6; cursor: wait; }
+@media (max-width: 480px) {
+  .panel { padding: 1rem; }
+  dl { grid-template-columns: 1fr; }
+  dd { margin-bottom: 0.5rem; }
+}

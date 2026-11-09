@@ -1,9 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Register } from './register';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('Register', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
+  beforeEach(() => TestBed.configureTestingModule({
+    providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+  }));
+
+  afterEach(() => TestBed.inject(HttpTestingController).verify());
 
   function setup() {
     const fixture = TestBed.createComponent(Register);
@@ -23,10 +29,18 @@ describe('Register', () => {
     expect(page.querySelector('#username-error')?.textContent).toContain('obavezno');
     expect(page.querySelector('#email-error')?.textContent).toContain('obavezno');
     expect(component.form.valid).toBeFalse();
+    TestBed.inject(HttpTestingController).expectNone('http://localhost:4000/users/register');
     fillCommon(component);
     expect(component.form.valid).toBeTrue();
     component.submit();
-    expect(component.statusMessage).toContain('nalog nije kreiran');
+    const request = TestBed.inject(HttpTestingController).expectOne('http://localhost:4000/users/register');
+    expect(request.request.method).toBe('POST');
+    expect(Object.fromEntries((request.request.body as FormData).entries())).toEqual({ username: 'klijent', password: 'Primer1!', firstName: 'Ana',
+      lastName: 'Anić', phone: '0601234567', email: 'ana@example.com',
+      role: 'client', clientType: 'individual' });
+    request.flush({ message: 'OK' }, { status: 201, statusText: 'Created' });
+    expect(component.statusMessage).toBe('Zahtev za registraciju je uspešno poslat.');
+    expect(component.isSubmitting).toBeFalse();
   });
 
   it('enables and shows institution fields for both business types and excludes them for individuals', () => {
@@ -65,6 +79,40 @@ describe('Register', () => {
     }
   });
 
+  it('maps institution data for legal clients and printers and shows backend errors', () => {
+    const { component } = setup();
+    fillCommon(component);
+    const http = TestBed.inject(HttpTestingController);
+    for (const type of ['legal', 'printing'] as const) {
+      component.form.controls.accountType.setValue(type);
+      component.form.controls.institution.setValue({ name: 'Firma', address: 'Beograd', registrationNumber: '01234567', pib: '123456789' });
+      component.form.controls.profileImage.setValue(new File(['test'], 'slika.png', { type: 'image/png' }));
+      component.submit();
+      component.submit();
+      const request = http.expectOne('http://localhost:4000/users/register');
+      expect(request.request.body.get('role')).toBe(type === 'printing' ? 'printer' : 'client');
+      expect(request.request.body.get('clientType')).toBe(type === 'printing' ? null : 'legal');
+      expect(request.request.body.get('institutionName')).toBe('Firma');
+      expect(request.request.body.get('address')).toBe('Beograd');
+      expect(request.request.body.get('registrationNumber')).toBe('01234567');
+      expect(request.request.body.get('pib')).toBe('123456789');
+      expect(request.request.body.get('profileImage')).toBe(component.form.controls.profileImage.value);
+      expect(request.request.body.get('institution')).toBeNull();
+      request.flush({ message: 'Email adresa već postoji.' }, { status: 400, statusText: 'Bad Request' });
+      expect(component.errorMessage).toBe('Email adresa već postoji.');
+      expect(component.isSubmitting).toBeFalse();
+      expect(component.statusMessage).toBe('');
+    }
+    component.form.controls.accountType.setValue('individual');
+    component.submit();
+    const request = http.expectOne('http://localhost:4000/users/register');
+    expect(request.request.body.get('institutionName')).toBeNull();
+    expect(request.request.body.get('pib')).toBeNull();
+    request.error(new ProgressEvent('error'));
+    expect(component.errorMessage).toContain('Registracija trenutno nije moguća');
+    expect(component.isSubmitting).toBeFalse();
+  });
+
   it('validates email, registration number and PIB as strings of the required format', () => {
     const { component } = setup();
     component.form.controls.email.setValue('neispravan-email');
@@ -101,6 +149,11 @@ describe('Register', () => {
       expect(page.querySelector('#image-name')?.textContent).toContain(name);
       if (!valid) expect(page.querySelector('#image-error')?.textContent).toContain('JPG, PNG ili GIF');
     }
+    fillCommon(component);
+    component.form.controls.profileImage.setValue(new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'large.png', { type: 'image/png' }));
+    component.submit();
+    expect(component.error('profileImage')).toContain('5 MB');
+    TestBed.inject(HttpTestingController).expectNone('http://localhost:4000/users/register');
     input.files = new DataTransfer().files;
     input.dispatchEvent(new Event('change'));
     expect(component.form.controls.profileImage.value).toBeNull();

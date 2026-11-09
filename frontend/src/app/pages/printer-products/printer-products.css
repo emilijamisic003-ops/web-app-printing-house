@@ -1,0 +1,180 @@
+.printer-products-page {
+  padding-block: 2.5rem;
+}
+
+.printer-products-panel {
+  padding: 1.75rem;
+  border: 1px solid #dfe5e1;
+  border-radius: 0.85rem;
+  background: white;
+}
+
+h1, h2 {
+  margin-top: 0;
+}
+
+.product-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #dfe5e1;
+  border-radius: 0.5rem;
+}
+
+.service-panel {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #dfe5e1;
+  border-radius: 0.5rem;
+  background: #f3f7f4;
+}
+
+.service-panel h2 {
+  margin-top: 0;
+}
+
+.product-form h2,
+.product-form label:nth-of-type(3),
+.product-form .checkbox {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  min-height: 2.4rem;
+  border: 1px solid #adbdb3;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+select {
+  min-width: 0;
+  background: white;
+}
+
+textarea {
+  min-height: 5rem;
+}
+
+.checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+button {
+  min-height: 2.4rem;
+  border: 1px solid #174e42;
+  border-radius: 0.4rem;
+  padding: 0.55rem 0.75rem;
+  background: #174e42;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.import-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1rem 0 1.5rem;
+  font-weight: 600;
+}
+
+.services-row {
+  background: #f3f7f4;
+}
+
+.services-row h3 {
+  margin: 0 0 0.5rem;
+}
+
+.services-row ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.services-row li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.service-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.service-form input,
+.service-form select {
+  min-width: 9rem;
+}
+
+.service-form label {
+  flex: 1 1 10rem;
+}
+
+.stock-input {
+  width: 6rem;
+  min-height: 2.4rem;
+}
+
+.image-row {
+  background: #fafcfb;
+}
+
+.product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th, td {
+  padding: 0.7rem;
+  border-bottom: 1px solid #dfe5e1;
+  vertical-align: middle;
+}
+
+.success {
+  color: #296350;
+}
+
+.error {
+  color: #a12b2b;
+}
+
+@media (max-width: 650px) {
+  .product-form {
+    grid-template-columns: 1fr;
+  }
+}

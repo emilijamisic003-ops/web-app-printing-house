@@ -1,0 +1,99 @@
+<main class="container printer-products-page">
+  <section class="printer-products-panel" aria-labelledby="products-title">
+    <h1 id="products-title">Moji proizvodi</h1>
+    @if (successMessage) { <p class="success" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <p class="error" role="alert">{{ errorMessage }}</p> }
+
+    <button type="button" (click)="startCreating()">DODAJ PROIZVOD</button>
+    <label class="import-control">Uvezi proizvode iz JSON fajla
+      <input type="file" accept=".json,application/json" (change)="importJson($event)" [disabled]="saving">
+    </label>
+
+    @if (creating) {
+      <form class="product-form" (ngSubmit)="save()">
+        <h2>Dodaj proizvod</h2>
+        <label>Šifra <input name="code" [(ngModel)]="form.code" required></label>
+        <label>Naziv <input name="name" [(ngModel)]="form.name" required></label>
+        <label>Opis <textarea name="description" [(ngModel)]="form.description"></textarea></label>
+        <label>Kategorija
+          <select name="category" [(ngModel)]="form.category" (ngModelChange)="categoryChanged()" required>
+            <option value="">Izaberite kategoriju</option>
+            @for (category of categories; track category.name) { <option [value]="category.name">{{ category.name }}</option> }
+          </select>
+        </label>
+        <label>Potkategorija
+          <select name="subcategory" [(ngModel)]="form.subcategory" [disabled]="!form.category" required>
+            <option value="">Izaberite potkategoriju</option>
+            @for (subcategory of selectedSubcategories; track subcategory) { <option [value]="subcategory">{{ subcategory }}</option> }
+          </select>
+        </label>
+        <label>Cena <input name="unitPrice" type="number" min="0" step="0.01" [(ngModel)]="form.unitPrice" required></label>
+        <label>Početno stanje <input name="stock" type="number" min="0" step="1" [(ngModel)]="form.stock" required></label>
+        <label>Boje <input name="colorsText" [(ngModel)]="form.colorsText" placeholder="Bela, Crna"></label>
+        <label>Slika proizvoda
+          <input type="file" accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif" (change)="onProductImageSelected($event)" [disabled]="saving">
+        </label>
+        @if (selectedProductImage) { <p class="hint">Izabrano: {{ selectedProductImage.name }}</p> }
+        <label class="checkbox"><input name="active" type="checkbox" [(ngModel)]="form.active"> Aktivno</label>
+        <button type="submit" [disabled]="saving">{{ saving ? 'ČUVANJE...' : 'SAČUVAJ' }}</button>
+        <button type="button" (click)="cancelCreating()" [disabled]="saving">OTKAŽI</button>
+      </form>
+    }
+
+    <button type="button" (click)="startAddingService()">DODAJ USLUGU</button>
+    @if (serviceFormOpen) {
+      <section class="service-panel" aria-labelledby="service-title">
+        <h2 id="service-title">Dodaj uslugu štampe</h2>
+        <form class="service-form" (ngSubmit)="addPrintService()">
+        <label>Proizvod
+          <select name="serviceProduct" [(ngModel)]="serviceForm.productCode" required>
+            <option value="">Izaberite proizvod</option>
+            @for (product of products; track product.code) { <option [value]="product.code">{{ product.name }}</option> }
+          </select>
+        </label>
+        <label>Šifra usluge <input name="serviceId" [(ngModel)]="serviceForm.serviceId" required></label>
+        <label>Naziv usluge <input name="serviceName" [(ngModel)]="serviceForm.name" required></label>
+        <label>Maksimalna dužina (mm) <input name="maxHeightMm" type="number" min="0.01" step="any" [(ngModel)]="serviceForm.maxHeightMm" required></label>
+        <label>Maksimalna širina (mm) <input name="maxWidthMm" type="number" min="0.01" step="any" [(ngModel)]="serviceForm.maxWidthMm" required></label>
+        <label>Dodatna cena po komadu <input name="servicePrice" type="number" min="0" step="0.01" [(ngModel)]="serviceForm.additionalPricePerItem" required></label>
+        <button type="submit" [disabled]="saving">SAČUVAJ</button>
+        <button type="button" (click)="cancelAddingService()" [disabled]="saving">OTKAŽI</button>
+        </form>
+      </section>
+    }
+
+    @if (loading) { <p>Učitavanje proizvoda...</p> }
+    @else {
+      <div class="table-wrapper" role="region" aria-label="Tabela proizvoda" tabindex="0">
+        <table>
+          <thead><tr><th>Šifra</th><th>Naziv</th><th>Kategorija</th><th>Cena</th><th>Stanje</th><th>Aktivno</th><th>Slika</th><th>Akcija</th></tr></thead>
+          <tbody>
+            @for (product of products; track product.code) {
+              <tr>
+                <td>{{ product.code }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.unitPrice }}</td>
+                <td><input class="stock-input" type="number" min="0" step="1" [name]="'stock-' + product.code" [(ngModel)]="stockValues[product.code]"></td>
+                <td>{{ product.active ? 'Da' : 'Ne' }}</td>
+                <td>
+                  @if (product.mainImage) { <img class="product-image" [src]="getProductImageUrl(product.mainImage)" [alt]="product.name"> }
+                  @else { <span>Slika nije dostupna</span> }
+                </td>
+                <td><button type="button" [disabled]="saving" (click)="saveStock(product)">SAČUVAJ KOLIČINU</button></td>
+              </tr>
+              <!-- <tr class="services-row"><td colspan="8">
+                <h3>Usluge štampe</h3>
+                @if (product.printServices.length) {
+                  <ul>@for (service of product.printServices; track service.serviceId) {
+                    <li><span>{{ service.name || service.printType || service.serviceId }}</span><span>{{ service.maxDimensions || (service.maxWidthMm + ' x ' + service.maxHeightMm + ' mm') }}</span><span>{{ service.additionalPricePerItem }} RSD po komadu</span><button type="button" [disabled]="saving" (click)="removePrintService(product, service.serviceId)">UKLONI</button></li>
+                  }</ul>
+                } @else { <p>Nema usluga štampe.</p> }
+              </td></tr> -->
+            } @empty { <tr><td colspan="8">Nema proizvoda.</td></tr> }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

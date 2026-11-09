@@ -24,13 +24,14 @@ header {
   border-radius: 0.5rem;
   font-size: 0.85rem;
 }
-nav a {
+nav a, nav button {
   display: inline-block;
   padding: 0.5rem 0.85rem;
   text-decoration: none;
   border-radius: 0.4rem;
   color: #174e42;
 }
-nav a.active, nav a:hover {
+nav button { font: inherit; border: 0; background: transparent; cursor: pointer; }
+nav a.active, nav a:hover, nav button:hover {
   background: #edf4ef;
 }

@@ -1,0 +1,37 @@
+<div class="container procurement-page"><section class="panel">
+  <h1>Aktivne javne nabavke</h1>
+  <!-- <button type="button" (click)="refresh()" [disabled]="loading || saving">OSVEŽI LISTU</button> -->
+  @if (loading) { <p>Učitavanje…</p> }
+  @if (error) { <p class="error" role="alert">{{ error }}</p> }
+  @if (message) { <p role="status">{{ message }}</p> }
+  @for (procurement of procurements; track procurement._id) {
+    <article class="procurement-entry">
+      <h2>{{ procurement.procurementId }}</h2>
+      <p>Rok: {{ procurement.expiresAt | date:'dd.MM.yyyy. HH:mm:ss' }} — {{ remaining(procurement) }}</p>
+      <ul>@for (item of procurement.items; track $index) {
+        <li>{{ item.productName }} ({{ item.productCode }}) — {{ item.quantity }} kom
+          @if (item.selectedColor) { · Boja: {{ item.selectedColor }} }
+          @if (item.selectedPrintService) { · Štampa: {{ item.selectedPrintService.printType || item.selectedPrintService.name || item.selectedPrintService.serviceId }} }
+          @if (item.printText) { <p>Tekst: {{ item.printText }}</p> }
+        </li>
+      }</ul>
+      @if (procurement.hasOffer) { <p>Ponuda je već poslata.</p> }
+      @else { <button type="button" (click)="open(procurement)" [disabled]="saving || expired(procurement)">POŠALJI PONUDU</button> }
+      @if (selected?.procurementId === procurement.procurementId) {
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <fieldset [disabled]="saving"><legend>Ponuda za sve proizvode</legend>
+            <p>Ponuda obuhvata sve tražene proizvode, pripremu i štampu.</p>
+            <label for="offer-total">Ukupna cena ponude (RSD)</label>
+            <input id="offer-total" type="number" min="0.01" step="0.01" formControlName="totalPrice">
+            @if (form.controls.totalPrice.touched && form.controls.totalPrice.invalid) {
+              <p class="error">Unesite ukupnu cenu veću od nule.</p>
+            }
+            <div class="actions"><button type="submit" [disabled]="expired(procurement)">{{ saving ? 'Slanje…' : 'POŠALJI PONUDU' }}</button>
+              <button type="button" class="secondary" (click)="cancel()">OTKAŽI</button></div>
+          </fieldset>
+          @if (offerError) { <p class="error" role="alert">{{ offerError }}</p> }
+        </form>
+      }
+    </article>
+  } @empty { @if (!loading && !error) { <p>Nema aktivnih javnih nabavki.</p> } }
+</section></div>

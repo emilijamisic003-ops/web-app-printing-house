@@ -1,0 +1,20 @@
+@if (isClient) {
+  <app-client-profile></app-client-profile>
+} @else if (isPrinter) {
+  <app-printer-profile></app-printer-profile>
+} @else {
+<div class="container role-page">
+  <section class="role-card" aria-labelledby="role-title">
+    <h1 id="role-title">{{ title }}</h1>
+    <p>Korisničko ime: {{ username || 'Niste prijavljeni.' }}</p>
+    @if (isAdmin) {
+      <nav aria-label="Administratorska navigacija">
+        <p><a routerLink="/admin/users">Korisnici</a></p>
+        <p><a routerLink="/admin/requests">Zahtevi za registraciju</a></p>
+        <p><a routerLink="/admin/categories">Kategorije</a></p>
+      </nav>
+    }
+    <button type="button" (click)="logout()">Odjavi se</button>
+  </section>
+</div>
+}

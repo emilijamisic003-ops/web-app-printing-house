@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { passwordValidators } from '../../shared/validators/password';
+import { AuthService } from '../../services/auth.service';
 
 type AccountType = 'individual' | 'legal' | 'printing';
 
 function profileImageValidator(control: AbstractControl) {
   const file = control.value as File | null;
   if (!file) return null;
+  if (file.size > 5 * 1024 * 1024) return { imageSize: true };
   return /\.(jpe?g|png|gif)$/i.test(file.name)
     && ['image/jpeg', 'image/png', 'image/gif'].includes(file.type)
     ? null : { imageType: true };
@@ -21,6 +23,8 @@ function profileImageValidator(control: AbstractControl) {
   styleUrl: './register.css'
 })
 export class Register {
+  private authService = inject(AuthService);
+
   readonly form = new FormGroup({
     accountType: new FormControl<AccountType>('individual', { nonNullable: true, validators: [Validators.required] }),
     username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -39,6 +43,8 @@ export class Register {
   });
 
   statusMessage = '';
+  errorMessage = '';
+  isSubmitting = false;
 
   constructor() {
     this.form.controls.institution.disable();
@@ -61,6 +67,7 @@ export class Register {
     if (!control?.enabled || !control.touched || !control.errors) return '';
     if (control.hasError('required')) return 'Ovo polje je obavezno.';
     if (control.hasError('email')) return 'Unesite ispravnu email adresu.';
+    if (control.hasError('imageSize')) return 'Slika ne sme biti veća od 5 MB.';
     if (control.hasError('imageType')) return 'Izaberite sliku u JPG, PNG ili GIF formatu.';
     if (path === 'password') {
       return 'Lozinka mora imati 8–12 karaktera, počinjati slovom i sadržati veliko slovo, broj i specijalni karakter.';
@@ -77,9 +84,46 @@ export class Register {
   }
 
   submit(): void {
+    if (this.isSubmitting) return;
+    this.statusMessage = '';
+    this.errorMessage = '';
     this.form.markAllAsTouched();
-    this.statusMessage = this.form.valid
-      ? 'Podaci su ispravno uneti. Registracija još nije omogućena; nalog nije kreiran.'
-      : 'Proverite označena polja.';
+    if (this.form.invalid) {
+      this.errorMessage = 'Proverite označena polja.';
+      return;
+    }
+
+    const values = this.form.getRawValue();
+    const data: Record<string, string> = {
+      username: values.username,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phone: values.phone,
+      email: values.email,
+      role: values.accountType === 'printing' ? 'printer' : 'client'
+    };
+
+    if (values.accountType !== 'printing') {
+      data['clientType'] = values.accountType;
+    }
+    if (this.isInstitution) {
+      data['institutionName'] = values.institution.name;
+      data['address'] = values.institution.address;
+      data['registrationNumber'] = values.institution.registrationNumber;
+      data['pib'] = values.institution.pib;
+    }
+
+    this.isSubmitting = true;
+    this.authService.register(data, values.profileImage).subscribe({
+      next: () => {
+        this.statusMessage = 'Zahtev za registraciju je uspešno poslat.';
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Registracija trenutno nije moguća. Pokušajte ponovo.';
+        this.isSubmitting = false;
+      }
+    });
   }
 }

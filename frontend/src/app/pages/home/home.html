@@ -1,4 +1,5 @@
 <div class="container home">
+  @if (!searchOnly) {
   <section class="intro" aria-labelledby="home-title">
     <p class="eyebrow">Sve za štampu na jednom mestu</p>
     <h1 id="home-title">Printing House</h1>
@@ -10,51 +11,119 @@
   <div class="overview">
     <section class="panel statistic" aria-labelledby="printing-houses-title">
       <h2 id="printing-houses-title">Registrovane štamparije</h2>
-      <span class="stat-value" aria-hidden="true">—</span>
-      <p>Ukupan broj registrovanih štamparija trenutno nije dostupan.</p>
+      @if (countLoading) {
+        <p role="status">Učitavanje broja štamparija...</p>
+      } @else if (countError) {
+        <p class="error-message" role="alert">{{ countError }}</p>
+      } @else {
+        <span class="stat-value">{{ printingHouseCount }}</span>
+        <p>Ukupan broj aktivnih i odobrenih štamparija.</p>
+      }
     </section>
     <section class="panel" aria-labelledby="top-products-title">
       <h2 id="top-products-title">Top 5 najomiljenijih proizvoda</h2>
       <p>Proizvodi sa najviše sviđanja na jednom mestu.</p>
-      <div class="placeholder">Ovde će biti prikazano pet najomiljenijih proizvoda.</div>
+      @if (productsLoading) {
+        <p role="status">Učitavanje proizvoda...</p>
+      } @else if (productsError) {
+        <p class="error-message" role="alert">{{ productsError }}</p>
+      } @else {
+        <ol class="top-products">
+          @for (product of topProducts; track product._id) {
+            <li>
+              <h3>{{ product.name }}</h3>
+              <p>Kategorija: {{ product.category }}</p>
+              <p>Cena po komadu: {{ product.unitPrice }} RSD</p>
+              <p>Sviđanja: {{ product.likes }}</p>
+            </li>
+          } @empty {
+            <li>Trenutno nema proizvoda za prikaz.</li>
+          }
+        </ol>
+      }
     </section>
   </div>
 
+  }
+
   <section class="panel search-section" id="product-search" aria-labelledby="search-title">
-    <h2 id="search-title">Pretraga proizvoda</h2>
+    @if (searchOnly) {
+      <h1 id="search-title">Pretraga proizvoda</h1>
+    } @else {
+      <h2 id="search-title">Pretraga proizvoda</h2>
+    }
     <p>Unesite naziv proizvoda ili izaberite kategoriju.</p>
-    <form (submit)="search($event)" class="search-form" aria-labelledby="search-title">
+    <form [formGroup]="searchForm" (ngSubmit)="search()" class="search-form" aria-labelledby="search-title">
       <div class="field">
         <label for="product-name">Naziv proizvoda</label>
-        <input id="product-name" name="productName" type="search" placeholder="Npr. majica, šolja, vizitkarta">
+        <input id="product-name" formControlName="name" type="search" placeholder="Npr. majica, šolja, vizitkarta">
+      </div>
+      <div class="field">
+        <label for="product-max-price">Maksimalna cena proizvoda</label>
+        <input id="product-max-price" formControlName="price" type="search" placeholder="Cena...">
       </div>
       <div class="field">
         <label for="category">Kategorija</label>
-        <select id="category" name="category">
+        <select id="category" formControlName="category">
           <option value="">Sve kategorije</option>
+          @for (category of categories; track category.name) {
+            <option [value]="category.name">{{ category.name }}</option>
+          }
         </select>
       </div>
       <button type="submit">Pretraži</button>
     </form>
-    <p class="search-status" role="status">{{ searchSubmitted
-      ? 'Pretraga još nije dostupna. Proizvodi i kategorije biće prikazani kada podaci budu dostupni.'
-      : 'Proizvodi i kategorije još nisu dostupni za pretragu.' }}</p>
+    @if (categoriesError) {
+      <p class="error-message" role="alert">{{ categoriesError }}</p>
+    }
+    @if (searchLoading) {
+      <p class="search-status" role="status">Pretraga je u toku...</p>
+    }
+    @if (searchError) {
+      <p class="error-message" role="alert">{{ searchError }}</p>
+    }
     <div class="table-wrapper" role="region" aria-label="Tabela rezultata pretrage" tabindex="0">
       <table>
         <caption>Rezultati pretrage</caption>
         <thead>
           <tr>
-            <th scope="col">Naziv proizvoda</th>
+            <th scope="col" [attr.aria-sort]="sortAccessibilityLabel">
+              <button type="button" class="sort-button" (click)="toggleSort()" aria-label="Sortiraj po nazivu proizvoda">
+                Naziv {{ sortMark }}
+              </button>
+            </th>
             <th scope="col">Kategorija</th>
-            <th scope="col">Štamparija</th>
-            <th scope="col">Grad</th>
+            <th scope="col">Potkategorija</th>
+             <th scope="col" [attr.aria-sort]="sortAccessibilityLabel">
+              <button type="button" class="sort-button" (click)="toggleSort()" aria-label="Sortiraj po ceni">
+                Cena {{ sortMark }}
+              </button>
+            </th>
+            <th scope="col">Stanje</th>
+            <th scope="col">Broj lajkova</th>
             <th scope="col">Detalji</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td colspan="5" class="empty-results">Ovde će biti prikazani proizvodi koji odgovaraju vašoj pretrazi.</td>
-          </tr>
+          @for (product of searchResults; track product._id) {
+            <tr>
+              <td>{{ product.name }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.subcategory }}</td>
+              <td>{{ product.unitPrice }} RSD</td>
+              <td>{{ product.stock }}</td>
+              <td>{{ product.likes }}</td>
+              <td><button type="button" [routerLink]="['/products', product.printingHouseUsername, product.code]">DETALJI</button></td>
+            </tr>
+          } @empty {
+            @if (!searchLoading && !searchError) {
+              <tr>
+                <td colspan="7" class="empty-results">{{ searchSubmitted
+                  ? 'Nema proizvoda koji odgovaraju pretrazi.'
+                  : 'Pokrenite pretragu da biste prikazali proizvode.' }}</td>
+              </tr>
+            }
+          }
         </tbody>
       </table>
     </div>

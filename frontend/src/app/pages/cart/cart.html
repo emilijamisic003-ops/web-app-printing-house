@@ -1,0 +1,37 @@
+<div class="container cart">
+  <section class="panel">
+    <h1>Korpa</h1>
+    @if (successMessage) { <p role="status">{{ successMessage }}</p> }
+    @if (warningMessage) { <p role="alert">{{ warningMessage }}</p> }
+    @if (errorMessage) {
+      <p class="error-message" role="alert">{{ errorMessage }}</p>
+    } 
+    @for (group of groups; track group.printingHouseUsername) {
+      <section class="printing-house-group">
+        <h2>Štamparija: {{ printerNames.get(group.printingHouseUsername) || group.printingHouseUsername }}</h2>
+        @for (entry of group.items; track entry.index) {
+          @let item = entry.item;
+          <article class="cart-item">
+            <h3>{{ item.productName }}</h3>
+            <dl>
+              <dt>Štamparija</dt><dd>{{ item.printingHouseUsername }}</dd>
+              <dt>Količina</dt><dd>{{ item.quantity }}</dd>
+              <dt>Boja</dt><dd>{{ item.selectedColor || 'Nije izabrana' }}</dd>
+              <dt>Usluga štampe</dt><dd>{{ item.selectedPrintService?.printType || item.selectedPrintService?.serviceId || 'Nije izabrana' }}</dd>
+              @if (item.printText) { <dt>Tekst za štampu</dt><dd class="print-text">{{ item.printText }}</dd> }
+              <dt>Ukupna cena</dt><dd>{{ item.totalPrice | number:'1.2-2' }} RSD</dd>
+            </dl>
+            <button type="button" [disabled]="confirming" (click)="removeItem(entry.index)" [attr.aria-label]="'Ukloni: ' + item.productName">UKLONI</button>
+          </article>
+        }
+        <p class="subtotal">Ukupno za ovu štampariju: {{ group.subtotal | number:'1.2-2' }} RSD</p>
+      </section>
+    } @empty {
+      <p>Korpa je prazna.</p>
+    }
+    <p class="total" aria-live="polite">Ukupno: {{ totalPrice | number:'1.2-2' }} RSD</p>
+    @if (items.length) {
+      <button type="button" class="confirm-button" [disabled]="confirming" (click)="confirm()">{{ confirming ? 'Potvrđivanje…' : 'POTVRDI' }}</button>
+    }
+  </section>
+</div>

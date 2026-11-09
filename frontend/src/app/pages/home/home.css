@@ -62,12 +62,25 @@ p {
   margin-bottom: 0;
   font-size: 0.9rem;
 }
-.placeholder {
-  padding: 1.5rem;
-  border: 1px dashed #cbd6cf;
-  border-radius: 0.5rem;
-  color: #53645b;
-  background: #f8faf8;
+.top-products {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+.top-products li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #dfe5e1;
+  overflow-wrap: anywhere;
+}
+.top-products h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+.top-products p {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+.error-message {
+  color: #a12b2b;
 }
 .search-section {
   scroll-margin-top: 1rem;
@@ -115,6 +128,22 @@ button:hover {
 .search-status {
   margin-block: 0.85rem 1.5rem;
   font-size: 0.9rem;
+}
+.sort-button {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  color: #174e42;
+  text-align: left;
+}
+.sort-button:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 .table-wrapper {
   overflow-x: auto;

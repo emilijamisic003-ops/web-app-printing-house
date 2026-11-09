@@ -92,14 +92,19 @@
         <input id="profile-image" type="file" accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
           (change)="selectImage($event)" [attr.aria-invalid]="!!error('profileImage')"
           aria-describedby="image-hint image-error image-name">
-        <p class="hint" id="image-hint">Dozvoljeni formati: JPG, PNG i GIF.</p>
+        <p class="hint" id="image-hint">Dozvoljeni formati: JPG, PNG i GIF. Najveća veličina: 5 MB.</p>
         <p class="file-name" id="image-name" aria-live="polite">{{ form.controls.profileImage.value
           ? 'Izabrani fajl: ' + form.controls.profileImage.value.name
           : 'Nijedna slika nije izabrana.' }}</p>
         <p class="error" id="image-error" aria-live="polite">{{ error('profileImage') }}</p>
       </div>
-      <button class="submit-button" type="submit">Registruj se</button>
+      <button class="submit-button" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Slanje…' : 'Registruj se' }}
+      </button>
       <p class="status" role="status">{{ statusMessage }}</p>
+      @if (errorMessage) {
+        <p class="error" role="alert">{{ errorMessage }}</p>
+      }
     </form>
     <p class="login-link">Već imate nalog? <a routerLink="/login">Prijavite se</a></p>
   </section>

@@ -1,0 +1,10 @@
+import express from 'express';
+import { confirmProcurement, createOffer, getActiveProcurements, getClientProcurements, getProcurementReport } from '../controllers/procurement.controller';
+const procurementRouter = express.Router();
+procurementRouter.post('/confirm', confirmProcurement);
+procurementRouter.get('/active/printer/:username', getActiveProcurements);
+procurementRouter.get('/active', getActiveProcurements);
+procurementRouter.get('/client/:username', getClientProcurements);
+procurementRouter.post('/:id/offers', createOffer);
+procurementRouter.get('/:id/report', getProcurementReport);
+export default procurementRouter;

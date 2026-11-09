@@ -1,0 +1,77 @@
+<main class="container archive-page">
+  <section class="archive-panel" aria-labelledby="archive-title">
+    <h1 id="archive-title">Arhiva proizvoda</h1>
+    @if (loading) { <p>Učitavanje arhive...</p> }
+    @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
+    @if (actionError) { <p class="error-message" role="alert">{{ actionError }}</p> }
+    @if (reactionMessage) { <p role="status">{{ reactionMessage }}</p> }
+    @if (reactionError) { <p class="error-message" role="alert">{{ reactionError }}</p> }
+    @if (!loading && !errorMessage) {
+      <form [formGroup]="form" (ngSubmit)="forma()">
+        <input type = "checkbox" formControlName = "comment"> Prikazi samo nekomentarisane proizvode
+        <!-- <input type ="radio" formControlName="choose" value="true"> Prikazi samo komentarisane 
+        <input type ="radio" formControlName="choose" value="false"> Prikazi sve  -->
+        <!-- <span style="color: red"> prikaz </span> -->
+        <button type = "submit"> Potvrdi</button>
+      </form>
+      <div class="table-wrapper" role="region" aria-label="Arhiva proizvoda" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col" [attr.aria-sort]="sortAccessibilityLabel('date')"><button type="button" (click)="sortBy('date')">Datum{{ sortLabel('date') }}</button></th>
+              <th scope="col" [attr.aria-sort]="sortAccessibilityLabel('productName')"><button type="button" (click)="sortBy('productName')">Proizvod{{ sortLabel('productName') }}</button></th>
+              <th scope="col" [attr.aria-sort]="sortAccessibilityLabel('quantity')"><button type="button" (click)="sortBy('quantity')">Količina{{ sortLabel('quantity') }}</button></th>
+              <th scope="col" [attr.aria-sort]="sortAccessibilityLabel('printingHouse')"><button type="button" (click)="sortBy('printingHouse')">Štamparija{{ sortLabel('printingHouse') }}</button></th>
+              <th scope="col">Status</th>
+              <th scope="col">Ocenite proizvod</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of sortedItems; track item.invoiceId + '-' + item.productCode) {
+              <tr>
+                <td>{{ item.createdAt | date:'dd.MM.yyyy. HH:mm' }}</td>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.printingHouseUsername }}</td>
+                <td>{{ item.status }}</td>
+                <td>
+                  @if (item.status === 'isporučeno') {
+                    <button type="button" [disabled]="receivingInvoiceId === item.invoiceId" (click)="markReceived(item.invoiceId)">
+                      {{ receivingInvoiceId === item.invoiceId ? 'ČUVANJE...' : 'PRIMLJENO' }}
+                    </button>
+                  } @else {
+                    <div class="reactions">
+                      @if (item.status === 'primljeno') {
+                      @if (!item.hasReacted) {
+                        <button type="button" [disabled]="!!reactionSendingKey" (click)="react(item, 'like')"> LIKE </button>
+                        <button type="button" [disabled]="!!reactionSendingKey" (click)="react(item, 'dislike')"> DISLIKE </button>
+                      } @else {
+                        <span> Već ste ocenili ovaj proizvod iz ove porudžbine.  </span>
+                      }
+                      }
+                      @if (item.status === 'primljeno') {
+                      <p>
+                        <textarea [attr.aria-label]="'Komentar za ' + item.productName" rows="2"
+                          [(ngModel)]="commentTexts[commentKey(item)]" placeholder="Komentar"
+                          [disabled]="item.hasCommented"></textarea>
+                        @if (!item.hasCommented) {
+                          <button type="button" [disabled]="commentSendingKey === commentKey(item)"
+                            (click)="sendComment(item)"> POŠALJI KOMENTAR. </button>
+                        } @else {
+                          <span> Već ste ostavili komentar.  </span>
+                        } 
+                      </p>
+                      }
+                    </div>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6" class="empty-results">Nema proizvoda u arhivi.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

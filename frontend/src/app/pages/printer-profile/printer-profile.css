@@ -1,0 +1,115 @@
+.printer-profile-page {
+  padding-block: 2.5rem;
+}
+
+.profile-card {
+  max-width: 50rem;
+  margin-inline: auto;
+  padding: 1.75rem;
+  border: 1px solid #dfe5e1;
+  border-radius: 0.85rem;
+  background: white;
+}
+
+h1, h2 {
+  margin-top: 0;
+}
+
+h2 {
+  margin-top: 1.75rem;
+  font-size: 1.2rem;
+}
+
+.profile-details > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 1rem;
+  padding-block: 0.75rem;
+  border-bottom: 1px solid #dfe5e1;
+}
+
+dt {
+  font-weight: 600;
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input, button {
+  min-height: 2.7rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #adbdb3;
+  border-radius: 0.4rem;
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  margin-top: 1rem;
+  border-color: #174e42;
+  background: #174e42;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.profile-image-upload {
+  margin-top: 1.5rem;
+}
+
+.profile-image-upload label {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.hint {
+  color: #53645b;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #a52c24;
+  min-height: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .fields-grid, .profile-details > div {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+}

@@ -1,0 +1,38 @@
+.role-page {
+  padding-block: 3rem;
+}
+
+.role-card {
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #dfe5e1;
+  border-radius: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+}
+
+button {
+  min-height: 2.85rem;
+  padding: 0.65rem 1.5rem;
+  border: 1px solid #174e42;
+  border-radius: 0.4rem;
+  background: #174e42;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #103c32;
+}
+
+a {
+  color: #174e42;
+  text-underline-offset: 0.2rem;
+}

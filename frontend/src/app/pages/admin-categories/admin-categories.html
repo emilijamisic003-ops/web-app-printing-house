@@ -1,0 +1,42 @@
+<main class="container admin-categories-page">
+  <section class="admin-categories-panel" aria-labelledby="categories-title">
+    <h1 id="categories-title">Kategorije</h1>
+    @if (successMessage) { <p class="success" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <p class="error" role="alert">{{ errorMessage }}</p> }
+
+    <form class="category-form" (ngSubmit)="addCategory()">
+      <label for="category-name">Naziv kategorije</label>
+      <input id="category-name" name="categoryName" [(ngModel)]="categoryName" required>
+      <button type="submit" [disabled]="saving">DODAJ KATEGORIJU</button>
+    </form>
+
+    @if (loading) {
+      <p>Učitavanje kategorija...</p>
+    } @else {
+      <div class="category-list">
+        @for (category of categories; track category._id || category.name) {
+          <article class="category-item">
+            <h2>{{ category.name }}</h2>
+            @if (category.subcategories.length) {
+              <ul>
+                @for (subcategory of category.subcategories; track subcategory) {
+                  <li>{{ subcategory }}</li>
+                }
+              </ul>
+            } @else {
+              <p>Nema potkategorija.</p>
+            }
+            <form class="subcategory-form" (ngSubmit)="addSubcategory(category)">
+              <label [for]="'subcategory-' + category.name">Nova potkategorija</label>
+              <input [id]="'subcategory-' + category.name" [name]="'subcategory-' + category.name"
+                [(ngModel)]="subcategoryNames[category.name]" required>
+              <button type="submit" [disabled]="saving">DODAJ POTKATEGORIJU</button>
+            </form>
+          </article>
+        } @empty {
+          <p>Nema kategorija.</p>
+        }
+      </div>
+    }
+  </section>
+</main>

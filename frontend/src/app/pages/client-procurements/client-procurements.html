@@ -1,0 +1,47 @@
+<div class="container procurement-page">
+  <section class="panel">
+    <h1>Javne nabavke</h1>
+    <p>Javna nabavka se raspisuje potvrdom cele <a routerLink="/client-car">korpe</a>.</p>
+    <!--<p>Istekle nabavke završavaju se pri otvaranju ili osvežavanju ove liste.</p>
+    <button type="button" (click)="refresh()" [disabled]="loading">OSVEŽI LISTU</button> -->
+    @if (successMessage) { <p role="status">{{ successMessage }}</p> }
+    @if (warning) { <p role="alert">{{ warning }}</p> }
+    @if (reportError) { <p class="error" role="alert">{{ reportError }}</p> }
+    @if (listError) { <p class="error" role="alert">{{ listError }}</p> }
+    @if (loading) { <p>Učitavanje…</p> }
+    @for (procurement of procurements; track procurement._id) {
+      <article class="procurement-entry">
+        <h2>{{ procurement.procurementId }}</h2>
+        <p>Datum raspisivanja: {{ procurement.createdAt | date:'dd.MM.yyyy. HH:mm:ss' }}</p>
+        <p>Rok: {{ procurement.expiresAt | date:'dd.MM.yyyy. HH:mm:ss' }}</p>
+        <p>Status: {{ statusLabel(procurement) }}</p>
+        <div class="table-wrapper"><table>
+          <thead><tr><th>Proizvod</th><th>Količina</th><th>Priprema</th></tr></thead>
+          <tbody>@for (item of procurement.items; track $index) {
+            <tr><td>{{ item.productName }} ({{ item.productCode }})</td><td>{{ item.quantity }}</td>
+              <td>{{ item.selectedColor || '—' }} / {{ item.selectedPrintService?.printType || item.selectedPrintService?.name || 'Bez usluge' }}
+                @if (item.printText) { <p>{{ item.printText }}</p> }</td></tr>
+          }</tbody>
+        </table></div>
+        @if (procurement.status === 'finished') {
+          <h3>Sve ponude</h3>
+          <div class="table-wrapper"><table>
+            <thead><tr><th>Štamparija</th><th>Ukupna cena</th><th>Datum ponude</th><th>Ishod</th></tr></thead>
+            <tbody>@for (offer of procurement.offers; track offer.printingHouseUsername) {
+              <tr><td>{{ offer.printingHouseUsername }}</td><td>{{ offer.totalPrice | number:'1.2-2' }} RSD</td>
+                <td>{{ offer.createdAt | date:'dd.MM.yyyy. HH:mm:ss' }}</td>
+                <td>@if (offer.printingHouseUsername === procurement.winningPrintingHouseUsername) { <strong>POBEDNIK</strong> }</td></tr>
+            } @empty { <tr><td colspan="4">Nema primljenih ponuda.</td></tr> }</tbody>
+          </table></div>
+          <button type="button" (click)="downloadReport(procurement)" [disabled]="!!downloading">PREUZMI PDF IZVEŠTAJ</button>
+          @if (procurement.winningPrintingHouseUsername) {
+            <p>Pobednička štamparija: {{ procurement.winningPrintingHouseUsername }}</p>
+            <p>Ukupna cena: {{ winningPrice(procurement) | number:'1.2-2' }} RSD</p>
+            <p>Faktura: {{ procurement.invoiceId }} — porudžbina je u štampi.</p>
+          } @else { <p>Nije pronađena validna ponuda.</p> }
+        }
+        @if (procurement.invoiceWarning) { <p role="alert">{{ procurement.invoiceWarning }}</p> }
+      </article>
+    } @empty { @if (!loading && !listError) { <p>Nema raspisanih javnih nabavki.</p> } }
+  </section>
+</div>
